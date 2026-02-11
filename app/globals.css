@@ -2,109 +2,260 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Variáveis de cores claras */
+/* ============================= */
+/* 🎨 VARIÁVEIS TEMA CLARO */
+/* ============================= */
+
 :root {
-  --bg: #F3F4F6;             /* fundo geral */
-  --card: #FFFFFF;           /* cards */
-  --text-primary: #111827;   /* texto principal */
-  --text-secondary: #6B7280; /* texto secundário */
-  --accent: #3B82F6;         /* azul para destaques */
-  --success: #16A34A;        /* verde para EXCELENTE / UP */
-  --warning: #F59E0B;        /* laranja para REGULAR */
-  --danger: #DC2626;         /* vermelho para RUIM / DOWN */
-  --border: #E5E7EB;         /* borda suave */
-  --shadow: rgba(0,0,0,0.05);
+  --bg: #0F172A;            /* slate-900 */
+  --card: #1E293B;          /* slate-800 */
+  --primary: #8B5CF6;       /* roxo tech */
+  --secondary: #38BDF8;     /* azul neon */
+  --text: #F1F5F9;          /* texto principal */
+  --text-muted: #94A3B8;    /* texto secundário */
+  --border: #334155;        /* slate-700 */
+
+  --success: #22C55E;
+  --warning: #FACC15;
+  --danger: #EF4444;
 }
 
-/* Body */
+/* ============================= */
+/* 🌎 BASE */
+/* ============================= */
+
 body {
-  @apply min-h-screen font-sans bg-[var(--bg)] text-[var(--text-primary)] p-6;
+  @apply min-h-screen font-sans;
+  background: var(--bg);
+  color: var(--text);
 }
 
-/* Container principal */
 .container {
-  @apply max-w-7xl mx-auto space-y-8;
+  @apply max-w-7xl mx-auto px-6 py-10 space-y-16;
 }
 
-/* Headers */
-.header {
-  @apply flex flex-col md:flex-row justify-between items-start md:items-center;
-}
-.header .title {
-  @apply text-3xl font-bold;
-}
-.header .subtitle {
-  @apply text-[var(--text-secondary)] mt-1;
+/* ============================= */
+/* 🚀 HERO HEADER */
+/* ============================= */
+
+.hero {
+  @apply w-full border-b;
+  background: linear-gradient(
+    135deg,
+    rgba(139, 92, 246, 0.08),
+    rgba(56, 189, 248, 0.05)
+  );
+  border-color: var(--border);
 }
 
-/* Formulário de avaliação */
+.hero-title {
+  @apply text-4xl font-extrabold;
+  background: linear-gradient(to right, #8B5CF6, #38BDF8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-subtitle {
+  @apply mt-3 text-lg;
+  color: var(--text-muted);
+}
+
+.hero-description {
+  @apply mt-4 text-sm max-w-2xl;
+  color: var(--text-muted);
+}
+
+/* Indicadores */
+
+.stats {
+  @apply flex flex-col gap-4 mt-6;
+}
+
+.stat-card {
+  @apply rounded-lg px-5 py-3 border transition-all duration-300 w-full flex items-center justify-between;
+  background: var(--card);
+  border-color: var(--border);
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(139, 92, 246, 0.15);
+}
+
+.stat-number {
+  @apply text-lg font-bold;
+  color: var(--primary);
+}
+
+.stat-label {
+  @apply text-xs;
+  color: var(--text-muted);
+}
+
+/* ============================= */
+/* 📝 SEÇÕES */
+/* ============================= */
+
+.section {
+  @apply space-y-6;
+}
+
+.section-title {
+  @apply text-2xl font-bold;
+}
+
+.section-description {
+  @apply text-sm;
+  color: var(--text-muted);
+}
+
+.main-grid {
+  @apply grid grid-cols-1 xl:grid-cols-2 gap-12 items-start;
+}
+
+/* ============================= */
+/* 🧾 FORM CARD */
+/* ============================= */
+
 .form-card {
-  @apply bg-[var(--card)] p-6 rounded-xl shadow-md border border-[var(--border)] space-y-4;
+  @apply p-8 rounded-2xl border space-y-4;
+  background: var(--card);
+  border-color: var(--border);
 }
+
 .form-card input,
 .form-card select {
-  @apply w-full border border-[var(--border)] rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[var(--accent)];
-}
-.form-card button {
-  @apply bg-[var(--accent)] text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-600 transition-colors;
+  @apply w-full rounded-md p-3 bg-slate-900 border text-sm transition;
+  border-color: var(--border);
+  color: var(--text);
 }
 
-/* Filtros de busca */
-.filter-card {
-  @apply bg-[var(--card)] p-4 rounded-xl shadow-md border border-[var(--border)] flex flex-wrap gap-4 items-end;
+.form-card input:focus,
+.form-card select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.3);
 }
+
+.form-card button {
+  @apply px-6 py-3 rounded-md font-semibold transition;
+  background: var(--primary);
+  color: white;
+}
+
+.form-card button:hover {
+  background: #7C3AED;
+}
+
+/* ============================= */
+/* 🔍 FILTROS */
+/* ============================= */
+
+.filter-card {
+  @apply p-6 rounded-2xl border flex flex-wrap gap-4 items-end;
+  background: var(--card);
+  border-color: var(--border);
+}
+
 .filter-card input,
 .filter-card select {
-  @apply border border-[var(--border)] rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[var(--accent)];
+  @apply rounded-md p-2 bg-slate-900 border text-sm;
+  border-color: var(--border);
+  color: var(--text);
 }
+
 .filter-card button {
-  @apply bg-[var(--accent)] text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-600 transition-colors;
+  @apply px-4 py-2 rounded-md transition font-medium;
+  background: var(--primary);
+  color: white;
 }
 
-/* Grid de cards de avaliações */
+.filter-card button:hover {
+  background: #7C3AED;
+}
+
+.export-btn {
+  background: var(--success);
+}
+
+.export-btn:hover {
+  background: #16A34A;
+}
+
+/* ============================= */
+/* 📦 HISTÓRICO */
+/* ============================= */
+
+.history-wrapper {
+  @apply p-8 rounded-2xl border;
+  background: var(--card);
+  border-color: var(--border);
+}
+
 .cards-grid {
-  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6;
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6;
 }
 
-/* Card individual */
 .card {
-  @apply bg-[var(--card)] p-4 rounded-xl border border-[var(--border)] shadow-md space-y-2;
+  @apply rounded-xl p-6 border transition-all duration-300;
+  background: var(--card);
+  border-color: var(--border);
 }
-.card .card-header {
-  @apply flex justify-between items-center;
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(56, 189, 248, 0.15);
 }
-.card .project-name {
+
+.card-header {
+  @apply flex justify-between items-center mb-3;
+}
+
+.project-name {
   @apply font-semibold text-lg;
 }
-.card .badge {
-  @apply px-3 py-1 rounded-full font-bold text-sm;
+
+.card-body {
+  @apply text-sm space-y-1;
+  color: var(--text-muted);
 }
+
+/* Badges */
+
+.badge {
+  @apply px-3 py-1 rounded-full text-xs font-bold border;
+}
+
 .badge.EXCELENTE {
-  @apply bg-[var(--success)] text-[var(--success)];
-  background-color: rgba(22, 163, 74, 0.2); 
+  color: var(--success);
+  background: rgba(34, 197, 94, 0.15);
+  border-color: rgba(34, 197, 94, 0.4);
 }
+
 .badge.BOM {
-  @apply bg-[var(--accent)] text-[var(--accent)];
-  background-color: rgba(59, 130, 246, 0.2); 
+  color: var(--secondary);
+  background: rgba(56, 189, 248, 0.15);
+  border-color: rgba(56, 189, 248, 0.4);
 }
+
 .badge.REGULAR {
-  @apply bg-[var(--warning)] text-[var(--warning)];
-  background-color: rgba(245, 158, 11, 0.2); 
+  color: var(--warning);
+  background: rgba(250, 204, 21, 0.15);
+  border-color: rgba(250, 204, 21, 0.4);
 }
+
 .badge.RUIM {
-  @apply bg-[var(--danger)] text-[var(--danger)];
-  background-color: rgba(220, 38, 38, 0.2); 
-}
-.card .card-body {
-  @apply text-[var(--text-secondary)] text-sm;
+  color: var(--danger);
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
 }
 
-/* Botão de exportar CSV */
-.export-btn {
-  @apply bg-green-500 text-white px-4 py-2 rounded-md font-semibold hover:bg-green-600 transition-colors;
-}
+/* ============================= */
+/* 📌 FOOTER */
+/* ============================= */
 
-/* Footer simples */
 .footer {
-  @apply mt-8 text-sm text-[var(--text-secondary)] text-center;
+  @apply text-center text-sm pt-12 border-t;
+  border-color: var(--border);
+  color: var(--text-muted);
 }
