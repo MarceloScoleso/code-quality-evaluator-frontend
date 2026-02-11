@@ -1,3 +1,110 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Variáveis de cores claras */
+:root {
+  --bg: #F3F4F6;             /* fundo geral */
+  --card: #FFFFFF;           /* cards */
+  --text-primary: #111827;   /* texto principal */
+  --text-secondary: #6B7280; /* texto secundário */
+  --accent: #3B82F6;         /* azul para destaques */
+  --success: #16A34A;        /* verde para EXCELENTE / UP */
+  --warning: #F59E0B;        /* laranja para REGULAR */
+  --danger: #DC2626;         /* vermelho para RUIM / DOWN */
+  --border: #E5E7EB;         /* borda suave */
+  --shadow: rgba(0,0,0,0.05);
+}
+
+/* Body */
+body {
+  @apply min-h-screen font-sans bg-[var(--bg)] text-[var(--text-primary)] p-6;
+}
+
+/* Container principal */
+.container {
+  @apply max-w-7xl mx-auto space-y-8;
+}
+
+/* Headers */
+.header {
+  @apply flex flex-col md:flex-row justify-between items-start md:items-center;
+}
+.header .title {
+  @apply text-3xl font-bold;
+}
+.header .subtitle {
+  @apply text-[var(--text-secondary)] mt-1;
+}
+
+/* Formulário de avaliação */
+.form-card {
+  @apply bg-[var(--card)] p-6 rounded-xl shadow-md border border-[var(--border)] space-y-4;
+}
+.form-card input,
+.form-card select {
+  @apply w-full border border-[var(--border)] rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[var(--accent)];
+}
+.form-card button {
+  @apply bg-[var(--accent)] text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-600 transition-colors;
+}
+
+/* Filtros de busca */
+.filter-card {
+  @apply bg-[var(--card)] p-4 rounded-xl shadow-md border border-[var(--border)] flex flex-wrap gap-4 items-end;
+}
+.filter-card input,
+.filter-card select {
+  @apply border border-[var(--border)] rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[var(--accent)];
+}
+.filter-card button {
+  @apply bg-[var(--accent)] text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-600 transition-colors;
+}
+
+/* Grid de cards de avaliações */
+.cards-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6;
+}
+
+/* Card individual */
+.card {
+  @apply bg-[var(--card)] p-4 rounded-xl border border-[var(--border)] shadow-md space-y-2;
+}
+.card .card-header {
+  @apply flex justify-between items-center;
+}
+.card .project-name {
+  @apply font-semibold text-lg;
+}
+.card .badge {
+  @apply px-3 py-1 rounded-full font-bold text-sm;
+}
+.badge.EXCELENTE {
+  @apply bg-[var(--success)] text-[var(--success)];
+  background-color: rgba(22, 163, 74, 0.2); 
+}
+.badge.BOM {
+  @apply bg-[var(--accent)] text-[var(--accent)];
+  background-color: rgba(59, 130, 246, 0.2); 
+}
+.badge.REGULAR {
+  @apply bg-[var(--warning)] text-[var(--warning)];
+  background-color: rgba(245, 158, 11, 0.2); 
+}
+.badge.RUIM {
+  @apply bg-[var(--danger)] text-[var(--danger)];
+  background-color: rgba(220, 38, 38, 0.2); 
+}
+.card .card-body {
+  @apply text-[var(--text-secondary)] text-sm;
+}
+
+/* Botão de exportar CSV */
+.export-btn {
+  @apply bg-green-500 text-white px-4 py-2 rounded-md font-semibold hover:bg-green-600 transition-colors;
+}
+
+/* Footer simples */
+.footer {
+  @apply mt-8 text-sm text-[var(--text-secondary)] text-center;
+}
