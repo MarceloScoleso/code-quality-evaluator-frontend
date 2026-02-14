@@ -97,30 +97,33 @@ body {
 /* ============================= */
 
 .section {
-  @apply space-y-6;
+  @apply flex flex-col gap-6;
 }
 
 .section-title {
-  @apply text-2xl font-bold;
+  @apply text-3xl font-bold tracking-tight;
 }
 
 .section-description {
-  @apply text-sm;
+  @apply text-base max-w-xl;
   color: var(--text-muted);
 }
 
 .main-grid {
-  @apply grid grid-cols-1 xl:grid-cols-2 gap-12 items-start;
+  @apply grid grid-cols-1 2xl:grid-cols-[480px_1fr] gap-16 items-start;
 }
-
 /* ============================= */
 /* 🧾 FORM CARD */
 /* ============================= */
 
 .form-card {
-  @apply p-8 rounded-2xl border space-y-4;
-  background: var(--card);
-  border-color: var(--border);
+  @apply p-8 rounded-3xl border space-y-5 shadow-xl backdrop-blur-sm;
+  background: linear-gradient(
+    145deg,
+    rgba(30, 41, 59, 0.9),
+    rgba(15, 23, 42, 0.95)
+  );
+  border-color: rgba(139, 92, 246, 0.15);
 }
 
 .form-card input,
@@ -138,13 +141,14 @@ body {
 }
 
 .form-card button {
-  @apply px-6 py-3 rounded-md font-semibold transition;
-  background: var(--primary);
+  @apply px-6 py-3 rounded-xl font-semibold transition shadow-md;
+  background: linear-gradient(to right, #8B5CF6, #6366F1);
   color: white;
 }
 
 .form-card button:hover {
-  background: #7C3AED;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
 }
 
 /* ============================= */
@@ -152,9 +156,13 @@ body {
 /* ============================= */
 
 .filter-card {
-  @apply p-6 rounded-2xl border flex flex-wrap gap-4 items-end;
-  background: var(--card);
-  border-color: var(--border);
+  @apply p-6 rounded-3xl border grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 shadow-lg;
+  background: linear-gradient(
+    145deg,
+    rgba(30, 41, 59, 0.9),
+    rgba(15, 23, 42, 0.95)
+  );
+  border-color: rgba(56, 189, 248, 0.15);
 }
 
 .filter-card input,
@@ -197,14 +205,18 @@ body {
 }
 
 .card {
-  @apply rounded-xl p-6 border transition-all duration-300;
-  background: var(--card);
-  border-color: var(--border);
+  @apply rounded-2xl p-6 border transition-all duration-300 shadow-lg;
+  background: linear-gradient(
+    145deg,
+    rgba(30, 41, 59, 0.9),
+    rgba(15, 23, 42, 0.95)
+  );
+  border-color: rgba(56, 189, 248, 0.15);
 }
 
 .card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 25px rgba(56, 189, 248, 0.15);
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(56, 189, 248, 0.25);
 }
 
 .card-header {
@@ -258,4 +270,107 @@ body {
   @apply text-center text-sm pt-12 border-t;
   border-color: var(--border);
   color: var(--text-muted);
+}
+
+/* ============================= */
+/* 🚀 HOME HERO */
+/* ============================= */
+
+.hero-section {
+  @apply relative overflow-hidden;
+}
+
+.hero-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 30%,
+    rgba(139, 92, 246, 0.08),
+    transparent 60%
+  );
+  z-index: 0;
+}
+
+.hero-content {
+  @apply relative z-10;
+}
+
+/* ============================= */
+/* 🎯 CTA BUTTONS */
+/* ============================= */
+
+.primary-cta {
+  @apply px-8 py-3 rounded-2xl font-semibold transition-all duration-300 shadow-lg;
+  background: linear-gradient(to right, #8B5CF6, #6366F1);
+  color: white;
+}
+
+.primary-cta:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 35px rgba(139, 92, 246, 0.5);
+}
+
+.secondary-cta {
+  @apply px-8 py-3 rounded-2xl font-semibold border transition-all duration-300;
+  border-color: var(--secondary);
+  color: var(--secondary);
+  background: rgba(56, 189, 248, 0.08);
+}
+
+.secondary-cta:hover {
+  transform: translateY(-3px);
+  background: rgba(56, 189, 248, 0.15);
+  box-shadow: 0 15px 30px rgba(56, 189, 248, 0.3);
+}
+
+.success-cta {
+  @apply px-8 py-3 rounded-2xl font-semibold transition-all duration-300;
+  background: linear-gradient(to right, #22C55E, #16A34A);
+  color: white;
+}
+
+.success-cta:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(34, 197, 94, 0.5);
+}
+
+.primary-cta,
+.secondary-cta,
+.success-cta {
+  @apply text-sm px-6 py-2.5 rounded-xl;
+}
+
+/* ============================= */
+/* ✨ FEATURE CARDS */
+/* ============================= */
+
+.feature-card {
+  @apply p-8 rounded-3xl border transition-all duration-300 shadow-lg;
+  background: linear-gradient(
+    145deg,
+    rgba(30, 41, 59, 0.9),
+    rgba(15, 23, 42, 0.95)
+  );
+  border-color: rgba(139, 92, 246, 0.15);
+}
+
+.feature-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(139, 92, 246, 0.4);
+  box-shadow: 0 20px 40px rgba(139, 92, 246, 0.25);
+}
+
+/* ============================= */
+/* 📊 STRATEGIC SECTION */
+/* ============================= */
+
+.strategic-section {
+  @apply relative py-24 rounded-3xl border text-center;
+  background: linear-gradient(
+    145deg,
+    rgba(56, 189, 248, 0.05),
+    rgba(139, 92, 246, 0.05)
+  );
+  border-color: rgba(56, 189, 248, 0.2);
 }

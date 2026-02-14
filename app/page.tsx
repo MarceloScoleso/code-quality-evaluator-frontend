@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Header from "./components/Header";
 
 type Language =
@@ -33,25 +33,7 @@ interface Evaluation {
 }
 
 export default function Page() {
-  // FORM
-  const [projectName, setProjectName] = useState("");
-  const [language, setLanguage] = useState<Language>("JAVA");
-  const [linesOfCode, setLinesOfCode] = useState(0);
-  const [complexity, setComplexity] = useState(1);
-  const [hasTests, setHasTests] = useState(true);
-  const [usesGit, setUsesGit] = useState(true);
-  const [analyzedBy, setAnalyzedBy] = useState("");
-
-  // DATA
   const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
-
-  // FILTERS
-  const [filterName, setFilterName] = useState("");
-  const [filterLanguage, setFilterLanguage] = useState<Language | "">("");
-  const [filterMinScore, setFilterMinScore] = useState<number | "">("");
-  const [filterMaxScore, setFilterMaxScore] = useState<number | "">("");
-  const [filterClassification, setFilterClassification] =
-    useState<Classification | "">("");
 
   const fetchEvaluations = async () => {
     const res = await fetch("/api/evaluations");
@@ -63,61 +45,6 @@ export default function Page() {
     fetchEvaluations();
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    await fetch("/api/evaluations", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        projectName,
-        language,
-        linesOfCode,
-        complexity,
-        hasTests,
-        usesGit,
-        analyzedBy,
-      }),
-    });
-
-    fetchEvaluations();
-  };
-
-  const handleFilter = async () => {
-    const params = new URLSearchParams();
-
-    if (filterName) params.append("projectName", filterName);
-    if (filterLanguage) params.append("language", filterLanguage);
-    if (filterMinScore) params.append("minScore", String(filterMinScore));
-    if (filterMaxScore) params.append("maxScore", String(filterMaxScore));
-    if (filterClassification)
-      params.append("classification", filterClassification);
-
-    const res = await fetch(`/api/evaluations/filter?${params.toString()}`);
-    const data: Evaluation[] = await res.json();
-    setEvaluations(data);
-  };
-
-  const handleExport = async () => {
-    const params = new URLSearchParams();
-
-    if (filterName) params.append("projectName", filterName);
-    if (filterLanguage) params.append("language", filterLanguage);
-    if (filterMinScore) params.append("minScore", String(filterMinScore));
-    if (filterMaxScore) params.append("maxScore", String(filterMaxScore));
-    if (filterClassification)
-      params.append("classification", filterClassification);
-
-    const res = await fetch(`/api/evaluations/export/csv?${params.toString()}`);
-    const blob = await res.blob();
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "evaluations.csv";
-    a.click();
-    window.URL.revokeObjectURL(url);
-  };
-
   const averageScore =
     evaluations.length > 0
       ? Math.round(
@@ -128,188 +55,101 @@ export default function Page() {
 
   return (
     <>
-    <Header 
-      evaluations={evaluations}
-      averageScore={averageScore}
-    />
-    <div className="container min-h-screen">
+      <Header
+        evaluations={evaluations}
+        averageScore={averageScore}
+      />
 
-    <div className="main-grid">
-   
-      {/* NOVA AVALIAÇÃO */}
-      <div className="section">
-        <h2 className="section-title">Nova Avaliação</h2>
-        <p className="section-description">
-          Insira as informações do projeto para gerar automaticamente uma
-          classificação baseada nas métricas definidas pelo sistema.
-        </p>
+      <main className="container min-h-screen">
 
-        <form className="form-card" onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Nome do Projeto"
-            value={projectName}
-            onChange={(e) => setProjectName(e.target.value)}
-            required
-          />
+  {/* HERO SECTION */}
+<section className="hero-section py-16 text-center">
+  <div className="hero-content space-y-6">
 
-          <select
-            value={language}
-            onChange={(e) => setLanguage(e.target.value as Language)}
-          >
-            {[
-              "JAVA","CSHARP","JAVASCRIPT","TYPESCRIPT","PYTHON",
-              "KOTLIN","GO","PHP","RUBY","SWIFT","C","CPP",
-              "RUST","DART","OTHER",
-            ].map((l) => (
-              <option key={l} value={l}>{l}</option>
-            ))}
-          </select>
+    <h2 className="text-4xl md:text-5xl font-bold leading-tight">
+      Governança Técnica com Inteligência
+    </h2>
 
-          <input
-            type="number"
-            placeholder="Linhas de Código"
-            value={linesOfCode}
-            onChange={(e) => setLinesOfCode(Number(e.target.value))}
-          />
+    <p className="max-w-xl mx-auto text-base text-slate-400">
+      Avalie e monitore a qualidade dos seus projetos
+      com métricas estruturadas e classificação automatizada.
+    </p>
 
-          <input
-            type="number"
-            placeholder="Complexidade (1-5)"
-            value={complexity}
-            onChange={(e) => setComplexity(Number(e.target.value))}
-            min={1}
-            max={5}
-          />
+    <div className="flex flex-wrap justify-center gap-4 mt-6">
+      <a href="/evaluations/new" className="primary-cta">
+        ➕ Nova Avaliação
+      </a>
 
-          <div className="flex gap-6">
-            <label>
-              <input
-                type="checkbox"
-                checked={hasTests}
-                onChange={(e) => setHasTests(e.target.checked)}
-              />{" "}
-              Possui Testes Automatizados
-            </label>
+      <a href="/evaluations" className="secondary-cta">
+        📊 Histórico
+      </a>
 
-            <label>
-              <input
-                type="checkbox"
-                checked={usesGit}
-                onChange={(e) => setUsesGit(e.target.checked)}
-              />{" "}
-              Utiliza Controle de Versão (Git)
-            </label>
-          </div>
+      <a
+        href="/api/evaluations/export/csv"
+        className="success-cta"
+      >
+        ⬇ CSV
+      </a>
+    </div>
 
-          <input
-            type="text"
-            placeholder="Responsável pela Análise"
-            value={analyzedBy}
-            onChange={(e) => setAnalyzedBy(e.target.value)}
-          />
+  </div>
+</section>
 
-          <button type="submit">Gerar Avaliação</button>
-        </form>
-      </div>
+  {/* FEATURES */}
+  <section className="grid md:grid-cols-3 gap-10 mt-28">
 
-      {/* HISTÓRICO */}
-      <div className="section history-wrapper">
-        <h2 className="section-title">Histórico de Avaliações</h2>
-        <p className="section-description">
-          Consulte avaliações anteriores, aplique filtros personalizados
-          e exporte relatórios completos em formato CSV.
-        </p>
+    <div className="feature-card">
+      <h3 className="text-xl font-semibold mb-4">
+        ⚙️ Análise Automatizada
+      </h3>
+      <p className="text-slate-400">
+        Score calculado automaticamente com base em linguagem,
+        complexidade, presença de testes e uso de versionamento.
+      </p>
+    </div>
 
-        <div className="filter-card">
-          <input
-            type="text"
-            placeholder="Filtrar por nome"
-            value={filterName}
-            onChange={(e) => setFilterName(e.target.value)}
-          />
+    <div className="feature-card">
+      <h3 className="text-xl font-semibold mb-4">
+        📊 Histórico Completo
+      </h3>
+      <p className="text-slate-400">
+        Visualização paginada com ordenação, filtros avançados
+        e busca por múltiplos critérios.
+      </p>
+    </div>
 
-          <select
-            value={filterLanguage}
-            onChange={(e) => setFilterLanguage(e.target.value as Language)}
-          >
-            <option value="">Todas as Linguagens</option>
-            {[
-              "JAVA","CSHARP","JAVASCRIPT","TYPESCRIPT","PYTHON",
-              "KOTLIN","GO","PHP","RUBY","SWIFT","C","CPP",
-              "RUST","DART","OTHER",
-            ].map((l) => (
-              <option key={l} value={l}>{l}</option>
-            ))}
-          </select>
+    <div className="feature-card">
+      <h3 className="text-xl font-semibold mb-4">
+        📁 Exportação Profissional
+      </h3>
+      <p className="text-slate-400">
+        Gere relatórios CSV com filtros personalizados para
+        auditoria, compliance e governança técnica.
+      </p>
+    </div>
 
-          <input
-            type="number"
-            placeholder="Score Min"
-            value={filterMinScore}
-            onChange={(e) =>
-              setFilterMinScore(e.target.value ? Number(e.target.value) : "")
-            }
-          />
+  </section>
 
-          <input
-            type="number"
-            placeholder="Score Max"
-            value={filterMaxScore}
-            onChange={(e) =>
-              setFilterMaxScore(e.target.value ? Number(e.target.value) : "")
-            }
-          />
+  {/* STRATEGIC SECTION */}
+  <section className="strategic-section mt-32 space-y-6">
+    <h3 className="text-3xl font-bold">
+      Decisões Técnicas Baseadas em Dados
+    </h3>
 
-          <select
-            value={filterClassification}
-            onChange={(e) =>
-              setFilterClassification(e.target.value as Classification)
-            }
-          >
-            <option value="">Classificação</option>
-            {["EXCELENTE","BOM","REGULAR","RUIM"].map((c) => (
-              <option key={c} value={c}>{c}</option>
-            ))}
-          </select>
+    <p className="max-w-3xl mx-auto text-slate-400">
+      Transforme métricas técnicas em inteligência estratégica.
+      Acompanhe a evolução dos seus projetos e mantenha padrões
+      de qualidade consistentes em todo o seu ecossistema de software.
+    </p>
+  </section>
 
-          <button onClick={handleFilter}>Filtrar</button>
-          <button onClick={handleExport} className="export-btn">
-            Exportar CSV
-          </button>
-        </div>
-
-        <div className="cards-grid">
-          {evaluations.map((ev) => (
-            <div key={ev.id} className="card">
-              <div className="card-header">
-                <span className="project-name">{ev.projectName}</span>
-                <span className={`badge ${ev.classification}`}>
-                  {ev.classification}
-                </span>
-              </div>
-
-              <div className="card-body">
-                <p>Linguagem: {ev.language}</p>
-                <p>Score: {ev.score}</p>
-                <p>Analisado por: {ev.analyzedBy}</p>
-                <p>
-                  Criado em:{" "}
-                  {new Date(ev.createdAt).toLocaleString("pt-BR")}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-      </div>
-
-      <footer className="footer">
-    © 2026 Code Quality Evaluator — Sistema desenvolvido para análise
-    técnica estruturada de projetos de software.
+  <footer className="mt-32 py-10 text-center text-sm text-slate-500">
+    © 2026 Code Quality Evaluator — Sistema desenvolvido
+    para análise técnica estruturada de projetos de software.
   </footer>
 
-</div>
+</main>
+
     </>
   );
 }
