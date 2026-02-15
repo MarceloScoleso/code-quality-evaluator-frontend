@@ -3,29 +3,11 @@
 import { useEffect, useState } from "react";
 import Header from "./components/Header";
 
-type Language =
-  | "JAVA"
-  | "CSHARP"
-  | "JAVASCRIPT"
-  | "TYPESCRIPT"
-  | "PYTHON"
-  | "KOTLIN"
-  | "GO"
-  | "PHP"
-  | "RUBY"
-  | "SWIFT"
-  | "C"
-  | "CPP"
-  | "RUST"
-  | "DART"
-  | "OTHER";
-
 type Classification = "EXCELENTE" | "BOM" | "REGULAR" | "RUIM";
 
 interface Evaluation {
   id: number;
   projectName: string;
-  language: Language;
   score: number;
   classification: Classification;
   analyzedBy: string;
@@ -85,7 +67,7 @@ export default function Page() {
       </a>
 
       <a
-        href="/api/evaluations/export/csv"
+        href="/evaluations/export/csv"
         className="success-cta"
       >
         ⬇ CSV
