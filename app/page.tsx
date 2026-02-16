@@ -2,14 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Header from "./components/Header";
+import Footer from "./components/Footer";
 
-type Classification = "EXCELENTE" | "BOM" | "REGULAR" | "RUIM";
 
 interface Evaluation {
   id: number;
   projectName: string;
   score: number;
-  classification: Classification;
   analyzedBy: string;
   createdAt: string;
 }
@@ -125,10 +124,7 @@ export default function Page() {
     </p>
   </section>
 
-  <footer className="mt-32 py-10 text-center text-sm text-slate-500">
-    © 2026 Code Quality Evaluator — Sistema desenvolvido
-    para análise técnica estruturada de projetos de software.
-  </footer>
+  <Footer />
 
 </main>
 
