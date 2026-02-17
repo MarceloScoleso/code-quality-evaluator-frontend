@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import BackToHomeButton from "@/app/components/BackToHomeButton";
+import { API_URL } from "@/app/config/api";
 
 type Language =
   | "JAVA"
@@ -37,14 +38,17 @@ export default function NewEvaluationPage() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setSuccess(false);
+ const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setLoading(true);
+  setSuccess(false);
 
-    await fetch("/api/evaluations", {
+  try {
+    const response = await fetch(`${API_URL}/api/evaluations`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         projectName,
         language,
@@ -56,23 +60,23 @@ export default function NewEvaluationPage() {
       }),
     });
 
-    setLoading(false);
+    if (!response.ok) {
+      throw new Error("Erro ao criar avaliação");
+    }
+
     setSuccess(true);
 
-  
-    setProjectName("");
-    setLanguage("JAVA");
-    setLinesOfCode(0);
-    setComplexity(1);
-    setHasTests(true);
-    setUsesGit(true);
-    setAnalyzedBy("");
-
-    
     setTimeout(() => {
       router.push("/evaluations");
     }, 1500);
-  };
+
+  } catch (error) {
+    console.error(error);
+    alert("Erro ao conectar com a API");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
   <>

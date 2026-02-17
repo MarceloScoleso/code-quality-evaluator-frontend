@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import BackToHomeButton from "../components/BackToHomeButton";
+import EvaluationFilters from "../components/EvaluationFilters";
+import { API_URL } from "../config/api";
 
 type Language =
   | "JAVA"
@@ -32,6 +34,8 @@ interface Evaluation {
   classification: Classification;
   analyzedBy: string;
   createdAt: string;
+  hasTests: boolean;   
+  usesGit: boolean;    
 }
 
 interface PageResponse {
@@ -60,6 +64,7 @@ export default function EvaluationsPage() {
   const [filterEndDate, setFilterEndDate] = useState("");
 
   const fetchEvaluations = async () => {
+  try {
     setLoading(true);
 
     const params = new URLSearchParams();
@@ -71,22 +76,38 @@ export default function EvaluationsPage() {
     if (filterClassification)
       params.append("classification", filterClassification);
 
-  if (filterMinScore !== "") params.append("minScore", String(filterMinScore));
-  if (filterMaxScore !== "") params.append("maxScore", String(filterMaxScore));
-  if (filterStartDate) params.append("startDate", filterStartDate);
-  if (filterEndDate) params.append("endDate", filterEndDate);
-    const res = await fetch(`/api/evaluations/filter?${params.toString()}`);
-    const data: PageResponse = await res.json();
+    if (filterMinScore !== "") params.append("minScore", String(filterMinScore));
+    if (filterMaxScore !== "") params.append("maxScore", String(filterMaxScore));
+    if (filterStartDate) params.append("startDate", filterStartDate);
+    if (filterEndDate) params.append("endDate", filterEndDate);
 
-    setEvaluations(data.content);
-    setTotalPages(data.totalPages);
+    const res = await fetch(
+      `${API_URL}/api/evaluations/filter?${params.toString()}`
+    );
+
+    if (!res.ok) {
+      console.error("Erro na API:", res.status);
+      setEvaluations([]);
+      setTotalPages(0);
+      return;
+    }
+
+    const data = await res.json();
+
+    setEvaluations(Array.isArray(data?.content) ? data.content : []);
+    setTotalPages(typeof data?.totalPages === "number" ? data.totalPages : 0);
+
+  } catch (error) {
+    console.error("Erro ao buscar avaliações:", error);
+    setEvaluations([]);
+    setTotalPages(0);
+  } finally {
     setLoading(false);
-  };
-
-  useEffect(() => {
-    fetchEvaluations();
-  }, [page]);
-
+  }
+};
+useEffect(() => {
+  fetchEvaluations();
+}, [page]);
   const handleFilter = () => {
     setPage(0);
     fetchEvaluations();
@@ -122,129 +143,23 @@ export default function EvaluationsPage() {
 </div>
 
       {/* FILTROS */}
-      <div className="filter-card space-y-6">
-
-  <h3 className="text-sm uppercase tracking-wider text-slate-400">
-    Filtros Avançados
-  </h3>
-
-  <div className="grid md:grid-cols-3 gap-6">
-
-    <div>
-      <label className="block text-sm font-medium mb-2">
-        Nome do Projeto
-      </label>
-      <input
-        type="text"
-        placeholder="Buscar por nome..."
-        value={filterName}
-        onChange={(e) => setFilterName(e.target.value)}
-      />
-    </div>
-
-    <div>
-      <label className="block text-sm font-medium mb-2">
-        Linguagem
-      </label>
-      <select
-        value={filterLanguage}
-        onChange={(e) =>
-          setFilterLanguage(e.target.value as Language)
-        }
-      >
-        <option value="">Todas</option>
-        {[
-          "JAVA","CSHARP","JAVASCRIPT","TYPESCRIPT","PYTHON",
-          "KOTLIN","GO","PHP","RUBY","SWIFT","C","CPP",
-          "RUST","DART","OTHER",
-        ].map((l) => (
-          <option key={l} value={l}>{l}</option>
-        ))}
-      </select>
-    </div>
-
-    <div>
-      <label className="block text-sm font-medium mb-2">
-        Classificação
-      </label>
-      <select
-        value={filterClassification}
-        onChange={(e) =>
-          setFilterClassification(e.target.value as Classification)
-        }
-      >
-        <option value="">Todas</option>
-        {["EXCELENTE","BOM","REGULAR","RUIM"].map((c) => (
-          <option key={c} value={c}>{c}</option>
-        ))}
-      </select>
-    </div>
-
-    <div>
-      <label className="block text-sm font-medium mb-2">
-        Score Mínimo
-      </label>
-      <input
-        type="number"
-        min={0}
-        max={100}
-        value={filterMinScore}
-        onChange={(e) =>
-          setFilterMinScore(
-            e.target.value === "" ? "" : Number(e.target.value)
-          )
-        }
-      />
-    </div>
-
-    <div>
-      <label className="block text-sm font-medium mb-2">
-        Score Máximo
-      </label>
-      <input
-        type="number"
-        min={0}
-        max={100}
-        value={filterMaxScore}
-        onChange={(e) =>
-          setFilterMaxScore(
-            e.target.value === "" ? "" : Number(e.target.value)
-          )
-        }
-      />
-    </div>
-
-    <div>
-      <label className="block text-sm font-medium mb-2">
-        Data Inicial
-      </label>
-      <input
-        type="date"
-        value={filterStartDate}
-        onChange={(e) => setFilterStartDate(e.target.value)}
-      />
-    </div>
-
-    <div>
-      <label className="block text-sm font-medium mb-2">
-        Data Final
-      </label>
-      <input
-        type="date"
-        value={filterEndDate}
-        onChange={(e) => setFilterEndDate(e.target.value)}
-      />
-    </div>
-
-  </div>
-
-  <div className="flex justify-end gap-4">
-    <button onClick={handleFilter} className="primary-cta">
-      Aplicar Filtros
-    </button>
-  </div>
-
-</div>
+      <EvaluationFilters
+  filterName={filterName}
+  setFilterName={setFilterName}
+  filterLanguage={filterLanguage}
+  setFilterLanguage={setFilterLanguage}
+  filterClassification={filterClassification}
+  setFilterClassification={setFilterClassification}
+  filterMinScore={filterMinScore}
+  setFilterMinScore={setFilterMinScore}
+  filterMaxScore={filterMaxScore}
+  setFilterMaxScore={setFilterMaxScore}
+  filterStartDate={filterStartDate}
+  setFilterStartDate={setFilterStartDate}
+  filterEndDate={filterEndDate}
+  setFilterEndDate={setFilterEndDate}
+  onApply={handleFilter}
+/>
 
       {/* LISTAGEM */}
       {loading ? (
@@ -253,7 +168,7 @@ export default function EvaluationsPage() {
         </div>
       ) : (
         <div className="cards-grid">
-          {evaluations.map((ev) => (
+          {Array.isArray(evaluations) && evaluations.map((ev) => (
             <div key={ev.id} className="card">
               <div className="card-header">
                 <span className="project-name">
@@ -275,6 +190,19 @@ export default function EvaluationsPage() {
     <span>Score</span>
     <span className="font-semibold">{ev.score}/100</span>
   </div>
+
+  <div className="flex gap-2 mt-2">
+  {ev.hasTests && (
+    <span className="text-xs px-2 py-1 bg-green-500/20 text-green-400 rounded-full border border-green-500/30">
+      Testes
+    </span>
+  )}
+  {ev.usesGit && (
+    <span className="text-xs px-2 py-1 bg-blue-500/20 text-blue-400 rounded-full border border-blue-500/30">
+      Git
+    </span>
+  )}
+</div>
 
   <div className="flex justify-between">
     <span>Analista</span>

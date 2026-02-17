@@ -152,42 +152,62 @@ body {
 }
 
 /* ============================= */
-/* 🔍 FILTROS */
+/* 🔍 FILTER COMPONENT */
 /* ============================= */
 
 .filter-card {
-  @apply p-6 rounded-3xl border grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 shadow-lg;
+  @apply p-6 rounded-2xl border shadow-md space-y-5 mx-auto;
   background: linear-gradient(
     145deg,
     rgba(30, 41, 59, 0.9),
     rgba(15, 23, 42, 0.95)
   );
   border-color: rgba(56, 189, 248, 0.15);
+  max-width: 950px;
+  width: 100%;
+  padding-bottom: 5;
 }
 
-.filter-card input,
-.filter-card select {
-  @apply rounded-md p-2 bg-slate-900 border text-sm;
-  border-color: var(--border);
-  color: var(--text);
+.filter-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4;
 }
 
-.filter-card button {
-  @apply px-4 py-2 rounded-md transition font-medium;
-  background: var(--primary);
+.filter-actions {
+  @apply flex justify-end gap-4 pt-2;
+}
+
+.filter-btn {
+  @apply px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300;
+  background: linear-gradient(to right, #8B5CF6, #6366F1);
   color: white;
 }
 
-.filter-card button:hover {
-  background: #7C3AED;
+.filter-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
 }
 
-.export-btn {
-  background: var(--success);
+
+.filter-card input,
+.filter-card select {
+  @apply w-full rounded-lg px-4 py-2 text-sm transition;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(56, 189, 248, 0.15);
+  color: var(--text);
 }
 
-.export-btn:hover {
-  background: #16A34A;
+.filter-card input:focus,
+.filter-card select:focus {
+  outline: none;
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.3);
+}
+
+/* Labels */
+
+.filter-card label {
+  color: var(--text-muted);
+  font-size: 0.85rem;
 }
 
 /* ============================= */
