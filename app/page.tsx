@@ -37,8 +37,6 @@ export default function Page() {
   return (
     <>
       <Header
-        evaluations={evaluations}
-        averageScore={averageScore}
       />
 
       <main className="container min-h-screen">

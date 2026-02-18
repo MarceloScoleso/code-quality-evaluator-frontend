@@ -115,7 +115,7 @@ useEffect(() => {
 
   return (
     <>
-        <Header evaluations={[]} averageScore={0} />
+        <Header/>
     <main className="container min-h-screen space-y-12">
       <div className="flex justify-end mb-6">
       <BackToHomeButton />

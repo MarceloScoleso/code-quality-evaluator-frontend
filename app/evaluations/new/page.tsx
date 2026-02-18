@@ -80,7 +80,7 @@ export default function NewEvaluationPage() {
 
   return (
   <>
-    <Header evaluations={[]} averageScore={0} />
+    <Header/>
 
     <main className="container min-h-screen">
       <div className="flex justify-end mb-6">
