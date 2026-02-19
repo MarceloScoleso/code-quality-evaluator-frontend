@@ -1,131 +1,113 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Header from "./components/Header";
+import Image from "next/image";
+import Link from "next/link";
 import Footer from "./components/Footer";
 
-
-interface Evaluation {
-  id: number;
-  projectName: string;
-  score: number;
-  analyzedBy: string;
-  createdAt: string;
-}
-
-export default function Page() {
-  const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
-
-  const fetchEvaluations = async () => {
-    const res = await fetch("/api/evaluations");
-    const data: Evaluation[] = await res.json();
-    setEvaluations(data);
-  };
-
-  useEffect(() => {
-    fetchEvaluations();
-  }, []);
-
-  const averageScore =
-    evaluations.length > 0
-      ? Math.round(
-          evaluations.reduce((acc, ev) => acc + ev.score, 0) /
-            evaluations.length
-        )
-      : 0;
-
+export default function LandingPage() {
   return (
     <>
-      <Header
-      />
+      <main className="hero-section min-h-screen flex flex-col relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950">
 
-      <main className="container min-h-screen">
+        {/* 🎇 Fundo animado */}
+        <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
+          <div className="animate-spin-slow absolute w-[600px] h-[600px] bg-gradient-to-r from-purple-600 to-blue-400 opacity-20 rounded-full -top-32 -left-32"></div>
+          <div className="animate-pulse absolute w-[400px] h-[400px] bg-gradient-to-r from-blue-400 to-purple-500 opacity-10 rounded-full -bottom-20 -right-20"></div>
+        </div>
 
-  {/* HERO SECTION */}
-<section className="hero-section py-16 text-center">
-  <div className="hero-content space-y-6">
+        <div className="hero-content max-w-7xl mx-auto px-6 py-20 text-center space-y-10 flex-1 relative z-10">
+          {/* Logo */}
+          <div className="flex justify-center">
+            <Image
+              src="/Logo1.png"
+              alt="Code Quality Evaluator"
+              width={180}
+              height={60}
+              priority
+              className="hover:scale-105 transition-transform duration-300 drop-shadow-lg"
+            />
+          </div>
 
-    <h2 className="text-4xl md:text-5xl font-bold leading-tight">
-      Governança Técnica com Inteligência
+          {/* Title */}
+          <h1 className="text-5xl md:text-6xl font-extrabold leading-tight">
+            Avaliação Inteligente de{" "}
+            <span className="bg-gradient-to-r from-purple-500 to-blue-400 bg-clip-text text-transparent animate-gradient">
+              Qualidade de Código
+            </span>
+          </h1>
+
+          <p className="text-slate-400 max-w-2xl mx-auto text-lg">
+            Analise métricas técnicas, monitore evolução de projetos e mantenha
+            padrões elevados de qualidade de software com uma plataforma moderna e estratégica.
+          </p>
+
+          {/* CTAs */}
+          <div className="flex justify-center gap-6 pt-6">
+            <Link href="/auth/login" className="primary-cta hover:scale-105 transition-transform">
+              Entrar
+            </Link>
+
+            <Link href="/auth/register" className="secondary-cta hover:scale-105 transition-transform">
+              Criar Conta
+            </Link>
+          </div>
+        </div>
+
+        {/* Como funciona */}
+        <section className="max-w-6xl mx-auto px-6 py-24 relative z-10 space-y-24 mb-20">
+  <div className="text-center space-y-4">
+    <h2 className="text-4xl md:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-blue-400">
+      Como funciona a plataforma
     </h2>
-
-    <p className="max-w-xl mx-auto text-base text-slate-400">
-      Avalie e monitore a qualidade dos seus projetos
-      com métricas estruturadas e classificação automatizada.
+    <p className="text-slate-400 max-w-2xl mx-auto text-lg">
+      Fluxo simples, estratégico e orientado a dados para elevar o padrão
+      de qualidade dos seus projetos.
     </p>
+  </div>
 
-    <div className="flex flex-wrap justify-center gap-4 mt-6">
-      <a href="/evaluations/new" className="primary-cta">
-        ➕ Nova Avaliação
-      </a>
-
-      <a href="/evaluations" className="secondary-cta">
-        📊 Histórico
-      </a>
-
-      <a
-        href="/evaluations/export/csv"
-        className="success-cta"
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+    {[
+      {
+        number: "01",
+        icon: "🔗",
+        title: "Conecte seu repositório",
+        description:
+          "Integre seus projetos e permita que a plataforma analise métricas estruturais, complexidade, cobertura de testes e versionamento.",
+      },
+      {
+        number: "02",
+        icon: "📊",
+        title: "Analise indicadores estratégicos",
+        description:
+          "Visualize dados consolidados que auxiliam na tomada de decisão técnica e no planejamento evolutivo do software.",
+      },
+      {
+        number: "03",
+        icon: "🚀",
+        title: "Eleve o padrão de qualidade",
+        description:
+          "Utilize as classificações automatizadas para manter governança, reduzir débito técnico e evoluir continuamente seus projetos.",
+      },
+    ].map((step) => (
+      <div
+        key={step.number}
+        className="relative p-8 rounded-3xl border border-purple-500/20 bg-gradient-to-tr from-slate-800/80 to-slate-900/95 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-transform"
       >
-        ⬇ CSV
-      </a>
-    </div>
-
+        <div className="flex items-center gap-4 mb-4">
+          <div className="text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-purple-500 to-blue-400 bg-clip-text text-transparent">
+            {step.number}
+          </div>
+          <div className="text-3xl">{step.icon}</div>
+        </div>
+        <h3 className="text-xl font-semibold mb-2">{step.title}</h3>
+        <p className="text-slate-400">{step.description}</p>
+      </div>
+    ))}
   </div>
 </section>
+      </main>
 
-  {/* FEATURES */}
-  <section className="grid md:grid-cols-3 gap-10 mt-28">
-
-    <div className="feature-card">
-      <h3 className="text-xl font-semibold mb-4">
-        ⚙️ Análise Automatizada
-      </h3>
-      <p className="text-slate-400">
-        Score calculado automaticamente com base em linguagem,
-        complexidade, presença de testes e uso de versionamento.
-      </p>
-    </div>
-
-    <div className="feature-card">
-      <h3 className="text-xl font-semibold mb-4">
-        📊 Histórico Completo
-      </h3>
-      <p className="text-slate-400">
-        Visualização paginada com ordenação, filtros avançados
-        e busca por múltiplos critérios.
-      </p>
-    </div>
-
-    <div className="feature-card">
-      <h3 className="text-xl font-semibold mb-4">
-        📁 Exportação Profissional
-      </h3>
-      <p className="text-slate-400">
-        Gere relatórios CSV com filtros personalizados para
-        auditoria, compliance e governança técnica.
-      </p>
-    </div>
-
-  </section>
-
-  {/* STRATEGIC SECTION */}
-  <section className="strategic-section mt-32 space-y-6">
-    <h3 className="text-3xl font-bold">
-      Decisões Técnicas Baseadas em Dados
-    </h3>
-
-    <p className="max-w-3xl mx-auto text-slate-400">
-      Transforme métricas técnicas em inteligência estratégica.
-      Acompanhe a evolução dos seus projetos e mantenha padrões
-      de qualidade consistentes em todo o seu ecossistema de software.
-    </p>
-  </section>
-
-  <Footer />
-
-</main>
-
+      <Footer />
     </>
   );
 }
