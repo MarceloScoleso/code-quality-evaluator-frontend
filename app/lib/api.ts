@@ -1,5 +1,7 @@
+import { API_URL } from "@/app/config/api";
+
 export async function apiFetch(
-  url: string,
+  endpoint: string,
   options: RequestInit = {}
 ) {
   const token =
@@ -13,7 +15,7 @@ export async function apiFetch(
     ...options.headers,
   };
 
-  const response = await fetch(url, {
+  const response = await fetch(`${API_URL}${endpoint}`, {
     ...options,
     headers,
   });

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { API_URL } from "../config/api";
+import { apiFetch } from "@/app/lib/api"; // <- usar apiFetch
 
 interface Stats {
   total: number;
@@ -21,7 +21,8 @@ export default function Header() {
 
   const fetchStats = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/evaluations/stats`);
+      setLoading(true);
+      const res = await apiFetch("/api/evaluations/stats");
 
       if (!res.ok) {
         throw new Error("Erro ao buscar estatísticas");
@@ -31,6 +32,7 @@ export default function Header() {
       setStats(data);
     } catch (error) {
       console.error(error);
+      setStats({ total: 0, averageScore: 0, excellentCount: 0 });
     } finally {
       setLoading(false);
     }
@@ -43,13 +45,10 @@ export default function Header() {
   return (
     <header className="w-full hero">
       <div className="max-w-7xl mx-auto px-6 py-8">
-
         <h1 className="sr-only">Code Quality Evaluator</h1>
 
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-10">
-
           <div className="max-w-2xl">
-
             <div className="mb-4 flex items-center">
               <Image
                 src="/Logo1.png"
@@ -77,26 +76,19 @@ export default function Header() {
           <div className="stats w-full lg:w-80 space-y-3">
             <div className="stat-card">
               <div className="stat-label">Avaliações</div>
-              <div className="stat-number">
-                {loading ? "..." : stats.total}
-              </div>
+              <div className="stat-number">{loading ? "..." : stats.total}</div>
             </div>
 
             <div className="stat-card">
               <div className="stat-label">Score Médio</div>
-              <div className="stat-number">
-                {loading ? "..." : stats.averageScore}
-              </div>
+              <div className="stat-number">{loading ? "..." : stats.averageScore}</div>
             </div>
 
             <div className="stat-card">
               <div className="stat-label">Excelentes</div>
-              <div className="stat-number">
-                {loading ? "..." : stats.excellentCount}
-              </div>
+              <div className="stat-number">{loading ? "..." : stats.excellentCount}</div>
             </div>
           </div>
-
         </div>
       </div>
     </header>

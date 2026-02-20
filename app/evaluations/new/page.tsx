@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import BackToHomeButton from "@/app/components/BackToHomeButton";
-import { API_URL } from "@/app/config/api";
+import { useAuth } from "@/app/context/AuthContext";
+import { apiFetch } from "@/app/lib/api";
 
 type Language =
   | "JAVA"
@@ -44,21 +45,19 @@ export default function NewEvaluationPage() {
   setSuccess(false);
 
   try {
-    const response = await fetch(`${API_URL}/api/evaluations`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        projectName,
-        language,
-        linesOfCode,
-        complexity,
-        hasTests,
-        usesGit,
-        analyzedBy,
-      }),
-    });
+    
+    const response = await apiFetch("/api/evaluations", {
+  method: "POST",
+  body: JSON.stringify({
+    projectName,
+    language,
+    linesOfCode,
+    complexity,
+    hasTests,
+    usesGit,
+    analyzedBy,
+  }),
+});
 
     if (!response.ok) {
       throw new Error("Erro ao criar avaliação");
