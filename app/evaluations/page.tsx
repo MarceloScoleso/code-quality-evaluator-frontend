@@ -16,18 +16,15 @@ interface Evaluation {
 
 export default function Page() {
   const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
-  const [loadingAuth, setLoadingAuth] = useState(true);
 
-  const { token } = useAuth();
+  const { token, isLoading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!token) {
+    if (!isLoading && !token) {
       router.push("/auth/login");
-    } else {
-      setLoadingAuth(false);
     }
-  }, [token, router]);
+  }, [token, isLoading, router]);
 
   const fetchEvaluations = async () => {
     const res = await fetch("/api/evaluations");
@@ -41,7 +38,7 @@ export default function Page() {
     }
   }, [token]);
 
-  if (loadingAuth) {
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center text-slate-400">
         Verificando autenticação...
@@ -58,10 +55,12 @@ export default function Page() {
       : 0;
 
   return (
-    <>
-      <Header />
+  <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950">
 
-      <main className="container min-h-screen">
+    <Header />
+
+    <main className="flex-1">
+      <div className="container">
 
         {/* HERO SECTION */}
         <section className="hero-section py-16 text-center">
@@ -132,7 +131,7 @@ export default function Page() {
         </section>
 
         {/* STRATEGIC SECTION */}
-        <section className="strategic-section mt-32 space-y-6">
+        <section className="strategic-section mt-32 space-y-6 text-center">
           <h3 className="text-3xl font-bold">
             Decisões Técnicas Baseadas em Dados
           </h3>
@@ -144,9 +143,11 @@ export default function Page() {
           </p>
         </section>
 
-        <Footer />
+      </div>
+    </main>
 
-      </main>
-    </>
-  );
+    <Footer />
+
+  </div>
+);
 }

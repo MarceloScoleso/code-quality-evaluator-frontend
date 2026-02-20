@@ -79,14 +79,18 @@ export default function NewEvaluationPage() {
 };
 
   return (
-  <>
-    <Header/>
+  <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950">
+    
+    <Header />
 
-    <main className="container min-h-screen">
-      <div className="flex justify-end mb-6">
-  <BackToHomeButton />
-</div>
-      <div className="max-w-2xl mx-auto space-y-10">
+    <main className="flex-1">
+      <div className="container py-12">
+
+        <div className="flex justify-end mb-6">
+          <BackToHomeButton />
+        </div>
+
+        <div className="max-w-2xl mx-auto space-y-10">
 
         <div className="space-y-4">
 
@@ -284,9 +288,11 @@ export default function NewEvaluationPage() {
 </form>
 
       </div>
-    <Footer />
-    </main>
     
-    </>
+    </div>
+    </main>
+    <Footer />
+     </div>
+    
   );
 }

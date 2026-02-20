@@ -81,10 +81,13 @@ export default function ExportCsvPage() {
   };
 
   return (
-    <>
-      <Header/>
+  <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950">
 
-      <main className="container min-h-screen space-y-12">
+    <Header />
+
+    <main className="flex-1">
+      <div className="container">
+
         <div className="flex justify-end mb-6">
           <BackToHomeButton />
         </div>
@@ -127,8 +130,11 @@ export default function ExportCsvPage() {
           buttonLabel="Exportar CSV"
         />
 
-        <Footer />
-      </main>
-    </>
-  );
+      </div>
+    </main>
+
+    <Footer />
+
+  </div>
+);
 }

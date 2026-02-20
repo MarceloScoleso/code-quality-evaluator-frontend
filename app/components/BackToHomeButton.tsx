@@ -7,7 +7,7 @@ export default function BackToHomeButton() {
 
   return (
     <button
-      onClick={() => router.push("/")}
+      onClick={() => router.push("/evaluations/")}
       className="back-home-btn"
     >
       ← Voltar para Home

@@ -117,10 +117,11 @@ body {
 /* ============================= */
 
 .form-card {
-  @apply p-8 rounded-3xl border space-y-5 shadow-xl backdrop-blur-sm;
+  @apply p-10 rounded-3xl border space-y-8 shadow-2xl backdrop-blur-xl transition-all duration-500;
+
   background: linear-gradient(
     145deg,
-    rgba(30, 41, 59, 0.9),
+    rgba(30, 41, 59, 0.85),
     rgba(15, 23, 42, 0.95)
   );
   border-color: rgba(139, 92, 246, 0.15);
