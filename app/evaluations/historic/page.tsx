@@ -210,7 +210,7 @@ export default function EvaluationsPage() {
             </span>
           </div>
 
-          <div className="flex gap-2 pt-2">
+          <div className="flex gap-2 pt-2 min-h-[33px]">
             {ev.hasTests && (
               <span className="text-xs px-2 py-1 bg-green-500/10 text-green-400 rounded-md border border-green-500/20">
                 ✔ Testes

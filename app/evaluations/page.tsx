@@ -75,26 +75,31 @@ export default function Page() {
               com métricas estruturadas e classificação automatizada.
             </p>
 
-            <div className="flex flex-wrap justify-center gap-4 mt-6">
-              <a href="/evaluations/new" className="primary-cta">
-                ➕ Nova Avaliação
-              </a>
+            <div className="flex flex-wrap justify-center gap-4 mt-8">
 
-              <a href="/evaluations/historic" className="secondary-cta">
-                📊 Histórico
-              </a>
+  <a href="/evaluations/new" className="primary-cta">
+    ➕ Nova Avaliação
+  </a>
 
-              <a
-                href="/evaluations/export/csv"
-                className="success-cta"
-              >
-                ⬇ CSV
-              </a>
+  <a href="/evaluations/historic" className="secondary-cta">
+    📊 Histórico
+  </a>
 
-              <a href="/evaluations/dashboard" className="secondary-cta">
-                📈 Dashboard
-              </a>
-            </div>
+  <a href="/evaluations/export/csv" className="success-cta">
+    ⬇ Exportar CSV
+  </a>
+
+</div>
+
+<div className="mt-16 w-full max-w-md mx-auto">
+  <div className="h-px bg-gradient-to-r from-transparent via-slate-700 to-transparent mb-8" />
+
+  <div className="flex justify-center">
+    <a href="/evaluations/dashboard" className="dashboard-cta">
+      📈 Acessar Dashboard Estratégico
+    </a>
+  </div>
+</div>
 
           </div>
         </section>

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { API_URL } from "@/app/config/api";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -12,6 +13,7 @@ export default function RegisterPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -32,13 +34,13 @@ export default function RegisterPage() {
 
   return (
     <main className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950">
-      {/* 🎇 Efeitos de fundo animado */}
+      {/* Fundo animado */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
         <div className="animate-spin-slow absolute w-[600px] h-[600px] bg-gradient-to-r from-purple-600 to-blue-400 opacity-20 rounded-full -top-32 -left-32"></div>
         <div className="animate-pulse absolute w-[400px] h-[400px] bg-gradient-to-r from-blue-400 to-purple-500 opacity-10 rounded-full -bottom-20 -right-20"></div>
       </div>
 
-      <div className="form-card relative z-10 w-full max-w-md p-10 rounded-3xl border border-purple-500/30 shadow-2xl backdrop-blur-sm bg-gradient-to-tr from-slate-800/90 to-slate-900/95 space-y-6">
+      <div className="relative z-10 w-full max-w-md p-10 rounded-3xl border border-purple-500/30 shadow-2xl backdrop-blur-sm bg-gradient-to-tr from-slate-800/90 to-slate-900/95 space-y-6">
         <div className="flex justify-center mb-6">
           <Image src="/Logo1.png" alt="Logo" width={140} height={50} className="drop-shadow-lg" />
         </div>
@@ -47,31 +49,46 @@ export default function RegisterPage() {
           Criar Conta
         </h1>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Nome */}
           <input
             type="text"
             placeholder="Nome"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="w-full rounded-xl p-4 bg-slate-900 border border-slate-700 text-white placeholder:text-slate-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500 focus:ring-opacity-30 transition"
+            className="w-full rounded-xl p-3 bg-slate-900 border border-slate-700 text-white placeholder:text-slate-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500 focus:ring-opacity-30 transition"
           />
+
+          {/* Email */}
           <input
             type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full rounded-xl p-4 bg-slate-900 border border-slate-700 text-white placeholder:text-slate-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500 focus:ring-opacity-30 transition"
+            className="w-full rounded-xl p-3 bg-slate-900 border border-slate-700 text-white placeholder:text-slate-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500 focus:ring-opacity-30 transition"
           />
-          <input
-            type="password"
-            placeholder="Senha"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="w-full rounded-xl p-4 bg-slate-900 border border-slate-700 text-white placeholder:text-slate-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500 focus:ring-opacity-30 transition"
-          />
+
+          {/* Senha com ícone igual ao Login */}
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Senha"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="w-full rounded-xl p-3 pr-12 bg-slate-900 border border-slate-700 text-white placeholder:text-slate-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500 focus:ring-opacity-30 transition"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 transition"
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
+          </div>
+
           <button
             type="submit"
             className="w-full py-3 rounded-xl font-bold text-white bg-gradient-to-r from-purple-500 to-blue-400 shadow-lg hover:scale-105 hover:shadow-2xl transition-transform"

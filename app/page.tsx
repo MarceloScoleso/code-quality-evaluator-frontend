@@ -30,15 +30,16 @@ export default function LandingPage() {
 
           {/* Title */}
           <h1 className="text-5xl md:text-6xl font-extrabold leading-tight">
-            Avaliação Inteligente de{" "}
+            Classificação Estratégica de{" "}
             <span className="bg-gradient-to-r from-purple-500 to-blue-400 bg-clip-text text-transparent animate-gradient">
-              Qualidade de Código
+              Projetos de Software
             </span>
           </h1>
 
           <p className="text-slate-400 max-w-2xl mx-auto text-lg">
-            Analise métricas técnicas, monitore evolução de projetos e mantenha
-            padrões elevados de qualidade de software com uma plataforma moderna e estratégica.
+            Avalie projetos com base em métricas técnicas como complexidade,
+uso de testes e versionamento. Gere classificações automáticas,
+acompanhe o histórico e visualize indicadores estratégicos em um dashboard interativo.
           </p>
 
           {/* CTAs */}
@@ -67,28 +68,28 @@ export default function LandingPage() {
 
   <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
     {[
-      {
-        number: "01",
-        icon: "🔗",
-        title: "Conecte seu repositório",
-        description:
-          "Integre seus projetos e permita que a plataforma analise métricas estruturais, complexidade, cobertura de testes e versionamento.",
-      },
-      {
-        number: "02",
-        icon: "📊",
-        title: "Analise indicadores estratégicos",
-        description:
-          "Visualize dados consolidados que auxiliam na tomada de decisão técnica e no planejamento evolutivo do software.",
-      },
-      {
-        number: "03",
-        icon: "🚀",
-        title: "Eleve o padrão de qualidade",
-        description:
-          "Utilize as classificações automatizadas para manter governança, reduzir débito técnico e evoluir continuamente seus projetos.",
-      },
-    ].map((step) => (
+  {
+    number: "01",
+    icon: "📝",
+    title: "Informe as métricas do projeto",
+    description:
+      "Preencha dados como linguagem utilizada, complexidade, presença de testes automatizados e uso de controle de versão.",
+  },
+  {
+    number: "02",
+    icon: "⚙️",
+    title: "Receba uma classificação automática",
+    description:
+      "O sistema processa as métricas informadas e gera um score técnico com classificação baseada em critérios estruturais e boas práticas.",
+  },
+  {
+    number: "03",
+    icon: "📈",
+    title: "Acompanhe indicadores estratégicos",
+    description:
+      "Visualize histórico, aplique filtros avançados e acompanhe métricas consolidadas em um dashboard para tomada de decisão.",
+  },
+].map((step) => (
       <div
         key={step.number}
         className="relative p-8 rounded-3xl border border-purple-500/20 bg-gradient-to-tr from-slate-800/80 to-slate-900/95 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-transform"
