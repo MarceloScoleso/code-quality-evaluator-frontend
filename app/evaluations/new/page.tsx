@@ -5,59 +5,30 @@ import { useRouter } from "next/navigation";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import BackToHomeButton from "@/app/components/BackToHomeButton";
-import { useAuth } from "@/app/context/AuthContext";
 import { apiFetch } from "@/app/lib/api";
+import EvaluationForm from "@/app/components/EvaluationForm";
 
-type Language =
-  | "JAVA"
-  | "CSHARP"
-  | "JAVASCRIPT"
-  | "TYPESCRIPT"
-  | "PYTHON"
-  | "KOTLIN"
-  | "GO"
-  | "PHP"
-  | "RUBY"
-  | "SWIFT"
-  | "C"
-  | "CPP"
-  | "RUST"
-  | "DART"
-  | "OTHER";
 
 export default function NewEvaluationPage() {
   const router = useRouter();
-
-  const [projectName, setProjectName] = useState("");
-  const [language, setLanguage] = useState<Language>("JAVA");
-  const [linesOfCode, setLinesOfCode] = useState<number | "">("");
-  const [complexity, setComplexity] = useState<number | "">("");
-  const [hasTests, setHasTests] = useState(true);
-  const [usesGit, setUsesGit] = useState(true);
-  const [analyzedBy, setAnalyzedBy] = useState("");
-
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState<string | undefined>(undefined);
 
- const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+type EvaluationFormData = Parameters<
+  React.ComponentProps<typeof EvaluationForm>["onSubmit"]
+>[0];
+
+const handleSubmit = async (data: EvaluationFormData) => {
   setLoading(true);
   setSuccess(false);
-
+  setError(undefined);
+  
   try {
-    
     const response = await apiFetch("/api/evaluations", {
-  method: "POST",
-  body: JSON.stringify({
-    projectName,
-    language,
-    linesOfCode,
-    complexity,
-    hasTests,
-    usesGit,
-    analyzedBy,
-  }),
-});
+      method: "POST",
+      body: JSON.stringify(data),
+    });
 
     if (!response.ok) {
       throw new Error("Erro ao criar avaliação");
@@ -69,9 +40,9 @@ export default function NewEvaluationPage() {
       router.push("/evaluations");
     }, 1500);
 
-  } catch (error) {
-    console.error(error);
-    alert("Erro ao conectar com a API");
+  } catch (err) {
+  console.error(err);
+  setError("Não foi possível criar a avaliação. Verifique os dados e tente novamente.");
   } finally {
     setLoading(false);
   }
@@ -113,178 +84,12 @@ export default function NewEvaluationPage() {
 </div>
 
 
-        <form onSubmit={handleSubmit} className="form-card space-y-8">
-
-  
-  {/* DADOS DO PROJETO */}
-  
-  <div className="space-y-5">
-
-    <div>
-      <label className="block text-sm font-medium mb-2">
-        Nome do Projeto
-      </label>
-      <input
-        type="text"
-        placeholder="Ex: Quality Evaluator API"
-        value={projectName}
-        onChange={(e) => setProjectName(e.target.value)}
-        required
-      />
-    </div>
-
-    <div>
-      <label className="block text-sm font-medium mb-2">
-        Linguagem Principal
-      </label>
-      <select
-        value={language}
-        onChange={(e) => setLanguage(e.target.value as Language)}
-      >
-        {[
-          "JAVA","CSHARP","JAVASCRIPT","TYPESCRIPT","PYTHON",
-          "KOTLIN","GO","PHP","RUBY","SWIFT","C","CPP",
-          "RUST","DART","OTHER",
-        ].map((l) => (
-          <option key={l} value={l}>{l}</option>
-        ))}
-      </select>
-    </div>
-
-  </div>
-
-  
-  {/* MÉTRICAS TÉCNICAS */}
- 
-  <div className="space-y-5">
-
-    <h3 className="text-sm uppercase tracking-wider text-slate-400">
-      Métricas Técnicas
-    </h3>
-
-    <div className="grid md:grid-cols-2 gap-6">
-
-      <div>
-        <label className="block text-sm font-medium mb-2">
-          Linhas de Código
-        </label>
-        <input
-          type="number"
-          placeholder="Ex: 350"
-          value={linesOfCode}
-          onChange={(e) =>
-            setLinesOfCode(
-              e.target.value === "" ? "" : Number(e.target.value)
-            )
-          }
+        <EvaluationForm
+        onSubmit={handleSubmit}
+        loading={loading}
+        success={success}
+        error={error}
         />
-        <p className="text-xs text-slate-500 mt-1">
-          Total estimado de linhas do projeto.
-        </p>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium mb-2">
-          Complexidade (1 a 5)
-        </label>
-        <input
-          type="number"
-          min={1}
-          max={5}
-          placeholder="Ex: 3"
-          value={complexity}
-          onChange={(e) =>
-            setComplexity(
-              e.target.value === "" ? "" : Number(e.target.value)
-            )
-          }
-        />
-        <p className="text-xs text-slate-500 mt-1">
-          1 = simples · 5 = altamente complexo
-        </p>
-      </div>
-
-    </div>
-  </div>
-
-  
-  {/* QUALIDADE */}
-  
-  <div className="space-y-5">
-
-    <h3 className="text-sm uppercase tracking-wider text-slate-400">
-      Boas Práticas
-    </h3>
-
-    <div className="grid md:grid-cols-2 gap-6">
-
-      <label className={`quality-toggle ${hasTests ? "active" : ""}`}>
-        <input
-          type="checkbox"
-          checked={hasTests}
-          onChange={(e) => setHasTests(e.target.checked)}
-        />
-        <div>
-          <span className="font-semibold">Testes Automatizados</span>
-          <p className="text-xs text-slate-400">
-            Projeto possui cobertura de testes.
-          </p>
-        </div>
-      </label>
-
-      <label className={`quality-toggle ${usesGit ? "active" : ""}`}>
-        <input
-          type="checkbox"
-          checked={usesGit}
-          onChange={(e) => setUsesGit(e.target.checked)}
-        />
-        <div>
-          <span className="font-semibold">Versionamento com Git</span>
-          <p className="text-xs text-slate-400">
-            Controle de versão estruturado.
-          </p>
-        </div>
-      </label>
-
-    </div>
-
-  </div>
-
- 
-  {/* RESPONSÁVEL */}
- 
-  <div>
-    <label className="block text-sm font-medium mb-2">
-      Responsável pela Análise
-    </label>
-    <input
-      type="text"
-      placeholder="Ex: Marcelo"
-      value={analyzedBy}
-      onChange={(e) => setAnalyzedBy(e.target.value)}
-    />
-  </div>
-
- 
-  {/* BOTÃO */}
-  
-  <div className="pt-4">
-    <button
-      type="submit"
-      disabled={loading}
-      className="w-full text-base"
-    >
-      {loading ? "Gerando avaliação..." : "Gerar Avaliação Técnica"}
-    </button>
-
-    {success && (
-      <div className="text-green-400 text-sm mt-4 text-center">
-        ✅ Avaliação criada com sucesso! Redirecionando...
-      </div>
-    )}
-  </div>
-
-</form>
 
       </div>
     

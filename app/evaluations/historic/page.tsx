@@ -6,6 +6,7 @@ import Footer from "../../components/Footer";
 import BackToHomeButton from "../../components/BackToHomeButton";
 import EvaluationFilters from "../../components/EvaluationFilters";
 import { apiFetch } from "@/app/lib/api";
+import Link from "next/link";
 
 type Language =
   | "JAVA"
@@ -163,71 +164,74 @@ export default function EvaluationsPage() {
             </div>
           ) : (
             <div className="cards-grid">
-              {evaluations.map((ev) => (
-                <div
-                  key={ev.id}
-                  className="rounded-2xl bg-slate-900/70 backdrop-blur-sm border border-slate-700/50 p-6 hover:border-sky-500/40 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-sky-500/10"
-                >
-                  {/* HEADER */}
-                  <div className="flex items-start justify-between mb-4">
-                    <h2 className="text-lg font-semibold text-white">
-                      {ev.projectName}
-                    </h2>
+  {evaluations.map((ev) => (
+    <Link key={ev.id} href={`/evaluations/historic/${ev.id}`} className="block">
+      <div
+        className="rounded-2xl bg-slate-900/70 backdrop-blur-sm border border-slate-700/50 p-6 
+                   hover:border-sky-500/40 transition-all duration-300 hover:-translate-y-1 
+                   hover:shadow-xl hover:shadow-sky-500/10"
+      >
+        {/* HEADER */}
+        <div className="flex items-start justify-between mb-4">
+          <h2 className="text-lg font-semibold text-white">
+            {ev.projectName}
+          </h2>
 
-                    <span
-                      className={`text-xs px-3 py-1 rounded-full font-medium border ${
-                        ev.classification === "EXCELENTE"
-                          ? "bg-green-500/15 text-green-400 border-green-500/30"
-                          : ev.classification === "BOM"
-                          ? "bg-blue-500/15 text-blue-400 border-blue-500/30"
-                          : ev.classification === "REGULAR"
-                          ? "bg-yellow-500/15 text-yellow-400 border-yellow-500/30"
-                          : "bg-red-500/15 text-red-400 border-red-500/30"
-                      }`}
-                    >
-                      {ev.classification}
-                    </span>
-                  </div>
+          <span
+            className={`text-xs px-3 py-1 rounded-full font-medium border ${
+              ev.classification === "EXCELENTE"
+                ? "bg-green-500/15 text-green-400 border-green-500/30"
+                : ev.classification === "BOM"
+                ? "bg-blue-500/15 text-blue-400 border-blue-500/30"
+                : ev.classification === "REGULAR"
+                ? "bg-yellow-500/15 text-yellow-400 border-yellow-500/30"
+                : "bg-red-500/15 text-red-400 border-red-500/30"
+            }`}
+          >
+            {ev.classification}
+          </span>
+        </div>
 
-                  {/* DIVIDER */}
-                  <div className="h-px bg-slate-700/50 mb-4" />
+        {/* DIVIDER */}
+        <div className="h-px bg-slate-700/50 mb-4" />
 
-                  {/* BODY */}
-                  <div className="space-y-3 text-sm text-slate-300">
-                    <div className="flex justify-between">
-                      <span className="text-slate-400">Linguagem</span>
-                      <span className="font-medium text-white">{ev.language}</span>
-                    </div>
+        {/* BODY */}
+        <div className="space-y-3 text-sm text-slate-300">
+          <div className="flex justify-between">
+            <span className="text-slate-400">Linguagem</span>
+            <span className="font-medium text-white">{ev.language}</span>
+          </div>
 
-                    <div className="flex justify-between items-center">
-                      <span className="text-slate-400">Score</span>
-                      <span className="text-white font-semibold">
-                        {ev.score}
-                        <span className="text-slate-500 font-normal">/100</span>
-                      </span>
-                    </div>
+          <div className="flex justify-between items-center">
+            <span className="text-slate-400">Score</span>
+            <span className="text-white font-semibold">
+              {ev.score}
+              <span className="text-slate-500 font-normal">/100</span>
+            </span>
+          </div>
 
-                    <div className="flex gap-2 pt-2">
-                      {ev.hasTests && (
-                        <span className="text-xs px-2 py-1 bg-green-500/10 text-green-400 rounded-md border border-green-500/20">
-                          ✔ Testes
-                        </span>
-                      )}
-                      {ev.usesGit && (
-                        <span className="text-xs px-2 py-1 bg-blue-500/10 text-blue-400 rounded-md border border-blue-500/20">
-                          ✔ Git
-                        </span>
-                      )}
-                    </div>
+          <div className="flex gap-2 pt-2">
+            {ev.hasTests && (
+              <span className="text-xs px-2 py-1 bg-green-500/10 text-green-400 rounded-md border border-green-500/20">
+                ✔ Testes
+              </span>
+            )}
+            {ev.usesGit && (
+              <span className="text-xs px-2 py-1 bg-blue-500/10 text-blue-400 rounded-md border border-blue-500/20">
+                ✔ Git
+              </span>
+            )}
+          </div>
 
-                    <div className="pt-3 border-t border-slate-800 text-xs text-slate-500 flex justify-between">
-                      <span>{ev.analyzedBy}</span>
-                      <span>{new Date(ev.createdAt).toLocaleDateString("pt-BR")}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+          <div className="pt-3 border-t border-slate-800 text-xs text-slate-500 flex justify-between">
+            <span>{ev.analyzedBy}</span>
+            <span>{new Date(ev.createdAt).toLocaleDateString("pt-BR")}</span>
+          </div>
+        </div>
+      </div>
+    </Link>
+  ))}
+</div>
           )}
 
           <div className="flex justify-center gap-4 items-center mt-10">
