@@ -90,6 +90,10 @@ export default function Page() {
               >
                 ⬇ CSV
               </a>
+
+              <a href="/evaluations/dashboard" className="secondary-cta">
+                📈 Dashboard
+              </a>
             </div>
 
           </div>
