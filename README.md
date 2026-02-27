@@ -1,36 +1,176 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📊 Code Quality Evaluator – Frontend
 
-## Getting Started
+Frontend da plataforma **Code Quality Evaluator**, responsável pela interface estratégica de análise e visualização de métricas de qualidade de projetos de software.
 
-First, run the development server:
+Aplicação construída com foco em:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Experiência moderna (UI/UX)
+- Governança técnica orientada a dados
+- Visualização estratégica
+- Arquitetura organizada e escalável
+
+---
+
+## 🚀 Tecnologias Utilizadas
+
+- Next.js 14 (App Router)
+- React 18
+- TypeScript
+- TailwindCSS
+- Context API para autenticação
+- Consumo de API REST (Spring Boot backend)
+
+---
+
+## 🎯 Objetivo da Aplicação
+
+Permitir que usuários:
+
+- Criem avaliações técnicas de projetos
+- Recebam score automático baseado em regras de negócio
+- Visualizem histórico completo
+- Apliquem filtros avançados
+- Exportem dados em CSV
+- Acompanhem indicadores estratégicos em dashboard interativo
+
+---
+
+## 🏗️ Estrutura do Projeto
+
+```css
+app/
+├── auth/
+│ ├── login/
+│ └── register/
+├── evaluations/
+│ ├── new/
+│ ├── historic/
+│ ├── dashboard/
+│ └── export/
+├── components/
+│ ├── Header
+│ ├── Footer
+│ ├── EvaluationForm
+│ └── FilterComponent
+└── context/
+└── AuthContext
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🔐 Autenticação
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Sistema baseado em JWT
+- Token armazenado via Context API
+- Rotas protegidas com redirecionamento automático
+- Controle de sessão persistente
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 📈 Funcionalidades Principais
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 📝 Nova Avaliação
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Formulário estruturado para inserção de:
 
-## Deploy on Vercel
+- Linguagem
+- Complexidade
+- Linhas de código
+- Uso de testes
+- Uso de Git
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Score calculado automaticamente pelo backend.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+### 📊 Histórico de Avaliações
+
+- Cards estilizados por classificação
+- Filtros por data, score e classificação
+- Ordenação e paginação
+- Atualização e exclusão de registros
+
+---
+
+### 📈 Dashboard Estratégico
+
+- Média geral de score
+- Indicadores consolidados
+- Visualização orientada à tomada de decisão
+
+---
+
+### 📁 Exportação CSV
+
+- Geração de relatórios profissionais
+- Filtros aplicáveis antes da exportação
+
+---
+
+## 🎨 UI / Design System
+
+- Tema Dark Tech (Slate + Purple + Blue)
+- Gradientes estratégicos
+- Animações suaves
+- Componentização de botões e cards
+- Feedback visual por classificação (cores dinâmicas)
+
+Classificações visuais:
+
+- 🟢 EXCELENTE
+- 🔵 BOM
+- 🟡 REGULAR
+- 🔴 RUIM
+
+---
+
+## ⚙️ Como Executar o Projeto
+
+```bash
+# Instalar dependências
+npm install
+```
+
+```bash
+# Rodar em desenvolvimento
+npm run dev
+```
+
+```arduino
+# Aplicação disponível em:
+http://localhost:3000
+```
+
+---
+
+## 🔌 Integração com Backend
+
+**O frontend consome a API REST desenvolvida em Spring Boot.**
+
+Endpoints utilizados:
+
+- /api/auth/login
+- /api/auth/register
+- /api/evaluations
+- /api/evaluations/filter
+- /api/evaluations/export/csv
+- /api/evaluations/dashboard
+
+---
+
+## 🧠 Conceitos Aplicados
+
+- Componentização
+- Separação de responsabilidades
+- Proteção de rotas
+- Controle de estado global
+- Design orientado à experiência
+- Governança técnica baseada em métricas
+
+---
+
+## 👨‍💻 Autor
+
+**Desenvolvedor:** Marcelo Scoleso
+
+**GitHub:** https://github.com/marceloscoleso
