@@ -599,4 +599,6 @@ body {
 
 .dashboard-cta:hover::before {
   transform: translateX(100%);
+
+  
 }
