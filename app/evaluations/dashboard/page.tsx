@@ -1,28 +1,19 @@
 "use client";
-
+ 
 import { useEffect, useState } from "react";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import BackToHomeButton from "@/app/components/BackToHomeButton";
 import { useAuth } from "@/app/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { apiFetch } from "@/app/lib/api";
 import {
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  Area,
+  BarChart, Bar, PieChart, Pie, Cell,
+  XAxis, YAxis, Tooltip, CartesianGrid,
+  ResponsiveContainer, LineChart, Line, Area,
 } from "recharts";
-import BackToHomeButton from "@/app/components/BackToHomeButton";
-
+import { TrendingUp, Award, FlaskConical, GitBranch, LayoutDashboard } from "lucide-react";
+ 
 interface DashboardSummary {
   total: number;
   averageScore: number;
@@ -35,275 +26,314 @@ interface DashboardSummary {
   testsPercentage: number;
   gitPercentage: number;
 }
-
+ 
+/* ── tooltip compartilhado ── */
+const tooltipStyle = {
+  contentStyle: {
+    backgroundColor: "#0D1117",
+    border: "1px solid rgba(255,255,255,0.07)",
+    borderRadius: "12px",
+    boxShadow: "0 16px 40px rgba(0,0,0,0.5)",
+  },
+  labelStyle:   { color: "#F1F5F9", fontWeight: 600, fontSize: 12 },
+  itemStyle:    { color: "#94A3B8", fontSize: 12 },
+};
+ 
+const sectionTagCls =
+  "flex items-center gap-2.5 text-[0.68rem] font-bold tracking-[0.14em] uppercase text-sky-400 before:block before:w-5 before:h-px before:bg-sky-400 mb-4";
+ 
+const chartCardCls =
+  "rounded-2xl border border-slate-800 bg-slate-900/50 p-6";
+ 
 export default function DashboardPage() {
   const { token, isLoading } = useAuth();
   const router = useRouter();
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
+  const [error, setError]     = useState<string | null>(null);
+ 
   useEffect(() => {
-    if (!isLoading && !token) {
-      router.push("/auth/login");
-    }
+    if (!isLoading && !token) router.push("/auth/login");
   }, [token, isLoading, router]);
-
+ 
   useEffect(() => {
-    const loadDashboard = async () => {
-      try {
-        const response = await apiFetch("/api/evaluations/dashboard");
-
-        if (!response.ok) {
-          throw new Error("Erro ao buscar dashboard");
-        }
-
-        const data = await response.json();
-        setSummary(data);
-      } catch (err) {
-        console.error("Erro ao carregar dashboard:", err);
-        setError("Não foi possível carregar o dashboard.");
-      }
-    };
-
-    if (token) {
-      loadDashboard();
-    }
+    if (!token) return;
+    apiFetch("/api/evaluations/dashboard")
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
+      .then(setSummary)
+      .catch(() => setError("Não foi possível carregar o dashboard."));
   }, [token]);
-
-  if (isLoading) {
+ 
+  /* ── loading / erro ── */
+  if (isLoading || !summary) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-slate-400">
-        Carregando dashboard...
+      <div className="min-h-screen flex flex-col bg-slate-950">
+        <Header />
+        <div className="flex-1 flex items-center justify-center">
+          {error ? (
+            <div className="flex items-center gap-3 text-red-400 text-sm">
+              <span className="text-xl">⚠</span>
+              {error}
+            </div>
+          ) : (
+            <div className="flex items-center gap-3 text-slate-400 text-sm">
+              <span className="w-4 h-4 rounded-full border-2 border-violet-500 border-t-transparent animate-spin" />
+              Carregando dashboard...
+            </div>
+          )}
+        </div>
       </div>
     );
   }
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-red-400">
-        {error}
-      </div>
-    );
-  }
-
-  if (!summary) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-slate-400">
-        Carregando dados...
-      </div>
-    );
-  }
-
+ 
+  /* ── dados dos gráficos ── */
   const classificationData = [
-    { name: "EXCELENTE", value: summary.excellent },
-    { name: "BOM", value: summary.good },
-    { name: "REGULAR", value: summary.regular },
-    { name: "RUIM", value: summary.bad },
+    { name: "Excelente", value: summary.excellent, color: "#22C55E" },
+    { name: "Bom",       value: summary.good,      color: "#38BDF8" },
+    { name: "Regular",   value: summary.regular,   color: "#FACC15" },
+    { name: "Ruim",      value: summary.bad,        color: "#EF4444" },
   ];
-
-  const languageData = Object.keys(summary.byLanguage).map((lang) => ({
-    name: lang,
-    value: summary.byLanguage[lang],
-  }));
-
+ 
+  const languageData = Object.entries(summary.byLanguage).map(([name, value]) => ({ name, value }));
+ 
   const scoreEvolution = Object.keys(summary.scoreEvolution)
     .sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
-    .map((date) => ({
-      date,
-      score: summary.scoreEvolution[date],
-    }));
-
+    .map((date) => ({ date, score: summary.scoreEvolution[date] }));
+ 
+  /* ── KPIs ── */
+  const kpis = [
+    {
+      label: "Total de Avaliações",
+      value: summary.total,
+      icon: <LayoutDashboard size={18} />,
+      color: "text-violet-400",
+      dim: "bg-violet-500/10 border-violet-500/20",
+    },
+    {
+      label: "Score Médio",
+      value: summary.averageScore.toFixed(1),
+      icon: <TrendingUp size={18} />,
+      color: "text-sky-400",
+      dim: "bg-sky-500/10 border-sky-500/20",
+    },
+    {
+      label: "% com Testes",
+      value: `${summary.testsPercentage.toFixed(1)}%`,
+      icon: <FlaskConical size={18} />,
+      color: "text-green-400",
+      dim: "bg-green-500/10 border-green-500/20",
+    },
+    {
+      label: "% com Git",
+      value: `${summary.gitPercentage.toFixed(1)}%`,
+      icon: <GitBranch size={18} />,
+      color: "text-yellow-400",
+      dim: "bg-yellow-500/10 border-yellow-500/20",
+    },
+  ];
+ 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 fade-in">
+    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100">
       <Header />
-
-      <main className="flex-1">
-        <div className="container">
-          <div className="flex justify-end mb-6">
-            <BackToHomeButton />
-          </div>
-
-          {/* HERO */}
-          <div className="space-y-4 mb-12">
-            <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-violet-500/10 text-violet-400 border border-violet-500/20">
+ 
+      <main className="flex-1 pt-8 pb-20">
+        <div className="max-w-6xl mx-auto px-6 space-y-10">
+ 
+          {/* ── back ── */}
+          <BackToHomeButton />
+ 
+          {/* ── cabeçalho ── */}
+          <div>
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-violet-500/25 bg-violet-500/[0.08] text-[0.68rem] font-semibold tracking-[0.12em] uppercase text-violet-400 mb-5">
+              <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" />
               Analytics
             </div>
-
-            <h1 className="text-4xl font-bold leading-tight">
+ 
+            <h1 className="font-extrabold text-[clamp(1.9rem,4vw,2.8rem)] leading-[1.1] tracking-[-0.025em] text-white mb-4">
               Dashboard{" "}
               <span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
                 Estratégico
               </span>
             </h1>
-
-            <p className="text-slate-400 max-w-2xl">
+ 
+            <p className="text-[0.88rem] text-slate-400 leading-relaxed max-w-lg font-light">
               Visualize métricas técnicas, classificação dos projetos e evolução
               do score médio com base nas avaliações realizadas.
             </p>
-
-            <div className="h-px bg-gradient-to-r from-transparent via-slate-700 to-transparent" />
+ 
+            <div className="mt-6 h-px bg-gradient-to-r from-violet-500/20 via-slate-700/60 to-transparent" />
           </div>
-
-          {/* KPI CARDS */}
-          <div className="grid md:grid-cols-4 gap-6 mb-14">
-            {[
-              { label: "Total de Avaliações", value: summary.total },
-              { label: "Score Médio", value: summary.averageScore.toFixed(1) },
-              { label: "% com Testes", value: `${summary.testsPercentage.toFixed(1)}%` },
-              { label: "% com Git", value: `${summary.gitPercentage.toFixed(1)}%` },
-            ].map((item, index) => (
-              <div key={index} className="feature-card text-center">
-                <p className="text-sm text-slate-400">{item.label}</p>
-                <p className="text-3xl font-bold mt-2 text-violet-400">
-                  {item.value}
-                </p>
+ 
+          {/* ── KPI cards ── */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {kpis.map((kpi) => (
+              <div
+                key={kpi.label}
+                className={`flex flex-col items-start gap-3 p-5 rounded-2xl border transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_28px_rgba(0,0,0,0.3)] ${kpi.dim}`}
+              >
+                <div className={`w-9 h-9 rounded-xl flex items-center justify-center border ${kpi.dim} ${kpi.color}`}>
+                  {kpi.icon}
+                </div>
+                <div>
+                  <p className={`font-extrabold text-2xl leading-none mb-1 ${kpi.color}`}>
+                    {kpi.value}
+                  </p>
+                  <p className="text-[0.72rem] font-medium text-slate-500 uppercase tracking-wide">
+                    {kpi.label}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
-
-          {/* GRÁFICOS */}
-          <div className="grid lg:grid-cols-2 gap-10 mb-14">
-            {/* CLASSIFICAÇÃO */}
-            <div className="feature-card">
-              <h3 className="mb-6 font-semibold text-lg">
-                Distribuição por Classificação
-              </h3>
-
-              <ResponsiveContainer width="100%" height={320}>
+ 
+          {/* ── barra de progresso de boas práticas ── */}
+          <div className="grid sm:grid-cols-2 gap-4">
+            {[
+              { label: "Projetos com Testes Automatizados", pct: summary.testsPercentage, color: "from-green-500 to-emerald-400", text: "text-green-400" },
+              { label: "Projetos com Controle Git",         pct: summary.gitPercentage,   color: "from-sky-500 to-blue-400",    text: "text-sky-400"   },
+            ].map((b) => (
+              <div key={b.label} className={`${chartCardCls} flex flex-col gap-3`}>
+                <div className="flex justify-between items-center">
+                  <span className="text-[0.78rem] text-slate-400">{b.label}</span>
+                  <span className={`font-extrabold text-lg ${b.text}`}>{b.pct.toFixed(1)}%</span>
+                </div>
+                <div className="h-2 rounded-full bg-white/[0.05] overflow-hidden">
+                  <div
+                    className={`h-full rounded-full bg-gradient-to-r ${b.color} transition-all duration-1000`}
+                    style={{ width: `${b.pct}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+ 
+          {/* ── gráficos: pizza + barras ── */}
+          <div className="grid lg:grid-cols-2 gap-6">
+ 
+            {/* pizza — classificação */}
+            <div className={chartCardCls}>
+              <div className={sectionTagCls}>Distribuição por Classificação</div>
+              <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
                   <defs>
-                    <linearGradient id="gradExcellent" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%" stopColor="#22C55E" />
-                      <stop offset="100%" stopColor="#16A34A" />
-                    </linearGradient>
-
-                    <linearGradient id="gradGood" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%" stopColor="#38BDF8" />
-                      <stop offset="100%" stopColor="#0EA5E9" />
-                    </linearGradient>
-
-                    <linearGradient id="gradRegular" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%" stopColor="#FACC15" />
-                      <stop offset="100%" stopColor="#EAB308" />
-                    </linearGradient>
-
-                    <linearGradient id="gradBad" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%" stopColor="#EF4444" />
-                      <stop offset="100%" stopColor="#DC2626" />
-                    </linearGradient>
+                    {classificationData.map((d) => (
+                      <linearGradient key={d.name} id={`grad-${d.name}`} x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stopColor={d.color} stopOpacity={1} />
+                        <stop offset="100%" stopColor={d.color} stopOpacity={0.7} />
+                      </linearGradient>
+                    ))}
                   </defs>
-
                   <Pie
                     data={classificationData}
                     dataKey="value"
                     nameKey="name"
                     outerRadius={110}
-                    innerRadius={60}
+                    innerRadius={58}
                     paddingAngle={4}
-                    label
+                    label={({ name, percent }) =>
+  `${name} ${((percent ?? 0) * 100).toFixed(0)}%`
+}
+                    labelLine={false}
                   >
-                    <Cell fill="url(#gradExcellent)" />
-                    <Cell fill="url(#gradGood)" />
-                    <Cell fill="url(#gradRegular)" />
-                    <Cell fill="url(#gradBad)" />
+                    {classificationData.map((d) => (
+                      <Cell key={d.name} fill={`url(#grad-${d.name})`} />
+                    ))}
                   </Pie>
-
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "#0F172A",
-                      border: "1px solid #334155",
-                      borderRadius: "12px",
-                    }}
-                    labelStyle={{ color: "#F1F5F9", fontWeight: 500 }}
-                    itemStyle={{ color: "#F1F5F9", fontWeight: 500 }}
-                    formatter={(value: any, name: any) => [value, name]}
-                  />
+                  <Tooltip {...tooltipStyle} />
                 </PieChart>
               </ResponsiveContainer>
+ 
+              {/* legenda manual */}
+              <div className="flex flex-wrap gap-3 mt-2 justify-center">
+                {classificationData.map((d) => (
+                  <div key={d.name} className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: d.color }} />
+                    <span className="text-[0.7rem] text-slate-500">{d.name}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-
-            {/* LINGUAGEM */}
-            <div className="feature-card">
-              <h3 className="mb-6 font-semibold text-lg">
-                Projetos por Linguagem
-              </h3>
-
-              <ResponsiveContainer width="100%" height={320}>
-                <BarChart data={languageData}>
+ 
+            {/* barras — linguagem */}
+            <div className={chartCardCls}>
+              <div className={sectionTagCls}>Projetos por Linguagem</div>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={languageData} barSize={28}>
                   <defs>
-                    <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#8B5CF6" />
-                      <stop offset="100%" stopColor="#6366F1" />
+                    <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%"   stopColor="#8B5CF6" />
+                      <stop offset="100%" stopColor="#6366F1" stopOpacity={0.7} />
                     </linearGradient>
                   </defs>
-
-                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.4} />
-
-                  <XAxis dataKey="name" stroke="#94A3B8" tick={{ fontSize: 12 }} />
-                  <YAxis stroke="#94A3B8" tick={{ fontSize: 12 }} />
-
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "#0F172A",
-                      border: "1px solid #334155",
-                      borderRadius: "12px",
-                    }}
-                    labelStyle={{ color: "#F1F5F9", fontWeight: 500 }}
-                    itemStyle={{ color: "#F1F5F9", fontWeight: 500 }}
-                  />
-
-                  <Bar dataKey="value" fill="url(#barGradient)" radius={[10, 10, 0, 0]} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                  <XAxis dataKey="name" stroke="#475569" tick={{ fontSize: 11, fill: "#64748B" }} axisLine={false} tickLine={false} />
+                  <YAxis stroke="#475569" tick={{ fontSize: 11, fill: "#64748B" }} axisLine={false} tickLine={false} />
+                  <Tooltip {...tooltipStyle} cursor={{ fill: "rgba(139,92,246,0.06)" }} />
+                  <Bar dataKey="value" fill="url(#barGrad)" radius={[8, 8, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
+ 
           </div>
-
-          {/* EVOLUÇÃO */}
-          <div className="feature-card">
-            <h3 className="mb-6 font-semibold text-lg">Evolução do Score Médio</h3>
-
-            <ResponsiveContainer width="100%" height={350}>
-              <LineChart data={scoreEvolution}>
+ 
+          {/* ── evolução do score ── */}
+          <div className={chartCardCls}>
+            <div className={sectionTagCls}>Evolução do Score Médio</div>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={scoreEvolution} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
                 <defs>
-                  <linearGradient id="lineGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#8B5CF6" stopOpacity={0.8} />
+                  <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%"   stopColor="#8B5CF6" stopOpacity={0.2} />
                     <stop offset="100%" stopColor="#8B5CF6" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.4} />
-                <XAxis dataKey="date" stroke="#94A3B8" tick={{ fontSize: 12 }} />
-                <YAxis stroke="#94A3B8" tick={{ fontSize: 12 }} />
-
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                <XAxis dataKey="date" stroke="#475569" tick={{ fontSize: 11, fill: "#64748B" }} axisLine={false} tickLine={false} />
+                <YAxis stroke="#475569" tick={{ fontSize: 11, fill: "#64748B" }} axisLine={false} tickLine={false} domain={[0, 100]} />
                 <Tooltip
-                  contentStyle={{
-                    backgroundColor: "#0F172A",
-                    border: "1px solid #334155",
-                    borderRadius: "12px",
-                  }}
-                  labelStyle={{ color: "#F1F5F9", fontWeight: 500 }}
-                  itemStyle={{ color: "#F1F5F9", fontWeight: 500 }}
-                  formatter={(value: number | undefined) =>
-                    value !== undefined ? value.toFixed(1) : "-"
-                    }
+                  {...tooltipStyle}
+                  formatter={(value: number | undefined) => [
+  (value ?? 0).toFixed(1),
+  "Score Médio",
+]}
                 />
-
+                <Area type="monotone" dataKey="score" stroke="none" fill="url(#areaGrad)" />
                 <Line
                   type="monotone"
                   dataKey="score"
                   stroke="#8B5CF6"
-                  strokeWidth={3}
-                  dot={{ r: 5 }}
-                  activeDot={{ r: 8 }}
+                  strokeWidth={2.5}
+                  dot={{ r: 4, fill: "#8B5CF6", strokeWidth: 2, stroke: "#0D1117" }}
+                  activeDot={{ r: 7, fill: "#8B5CF6", stroke: "#0D1117", strokeWidth: 2 }}
                 />
-
-                <Area type="monotone" dataKey="score" stroke="none" fill="url(#lineGradient)" />
               </LineChart>
             </ResponsiveContainer>
           </div>
+ 
+          {/* ── breakdown de classificação ── */}
+          <div className={chartCardCls}>
+            <div className={sectionTagCls}>Breakdown por Classificação</div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-2">
+              {classificationData.map((d) => {
+                const pct = summary.total > 0 ? ((d.value / summary.total) * 100).toFixed(1) : "0.0";
+                return (
+                  <div key={d.name} className="flex flex-col gap-2 p-4 rounded-xl border border-white/[0.05] bg-white/[0.02]">
+                    <div className="flex justify-between items-center">
+                      <span className="text-[0.7rem] font-bold uppercase tracking-wider" style={{ color: d.color }}>{d.name}</span>
+                      <span className="font-extrabold text-lg text-white leading-none">{d.value}</span>
+                    </div>
+                    <div className="h-1 rounded-full bg-white/[0.05] overflow-hidden">
+                      <div className="h-full rounded-full transition-all duration-700" style={{ width: `${pct}%`, background: d.color }} />
+                    </div>
+                    <span className="text-[0.65rem] text-slate-600">{pct}% do total</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+ 
         </div>
       </main>
-
+ 
       <Footer />
     </div>
   );

@@ -93,7 +93,7 @@ export default function LoginPage() {
             </span>
           </div>
  
-          <h1 className="text-4xl xl:text-5xl font-extrabold leading-[1.1] tracking-tight mb-5">
+          <h1 className="text-4xl xl:text-5xl font-extrabold !leading-[1.4] tracking-tight mb-5">
             Qualidade de software
             <span className="block bg-gradient-to-r from-violet-500 to-sky-400 bg-clip-text text-transparent">
               começa aqui.

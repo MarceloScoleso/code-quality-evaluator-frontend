@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
-import BackToHomeButton from "@/app/components/BackToHomeButton";
 import EvaluationForm, {
   EvaluationFormData,
 } from "@/app/components/EvaluationForm";
 import { apiFetch } from "@/app/lib/api";
+import { ArrowLeft } from "lucide-react";
 
 export default function EditEvaluationPage() {
   const { id } = useParams();
@@ -21,16 +21,15 @@ export default function EditEvaluationPage() {
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState<string | undefined>(undefined);
 
-  // Buscar avaliação existente
+  /* ── buscar avaliação ── */
   useEffect(() => {
     const fetchEvaluation = async () => {
       try {
         const response = await apiFetch(`/api/evaluations/${id}`);
 
-        if (!response.ok) {
-          throw new Error("Erro ao buscar avaliação");
-        }
+        if (!response.ok) throw new Error();
 
         const data = await response.json();
 
@@ -47,21 +46,20 @@ export default function EditEvaluationPage() {
 
       } catch (error) {
         console.error(error);
-        alert("Erro ao carregar avaliação");
+        setError("Não foi possível carregar a avaliação.");
       } finally {
         setFetching(false);
       }
     };
 
-    if (id) {
-      fetchEvaluation();
-    }
+    if (id) fetchEvaluation();
   }, [id]);
 
-  // Atualizar avaliação
+  /* ── update ── */
   const handleUpdate = async (data: EvaluationFormData) => {
     setLoading(true);
     setSuccess(false);
+    setError(undefined);
 
     try {
       const response = await apiFetch(`/api/evaluations/${id}`, {
@@ -69,78 +67,81 @@ export default function EditEvaluationPage() {
         body: JSON.stringify(data),
       });
 
-      if (!response.ok) {
-        throw new Error("Erro ao atualizar avaliação");
-      }
+      if (!response.ok) throw new Error();
 
       setSuccess(true);
-
-      setTimeout(() => {
-        router.push("/evaluations");
-      }, 1500);
+      setTimeout(() => router.push("/evaluations"), 1500);
 
     } catch (error) {
       console.error(error);
-      alert("Erro ao atualizar avaliação");
+      setError("Não foi possível atualizar a avaliação.");
     } finally {
       setLoading(false);
     }
   };
 
+  /* ── loading ── */
   if (fetching) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-950 text-slate-400">
+        <span className="w-4 h-4 mr-3 rounded-full border-2 border-violet-500 border-t-transparent animate-spin" />
         Carregando avaliação...
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950">
+    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100">
       <Header />
 
-      <main className="flex-1">
-        <div className="container py-12">
+      <main className="flex-1 pt-8 pb-20">
+        <div className="max-w-2xl mx-auto px-6">
 
-          <div className="flex justify-end mb-6">
-            <BackToHomeButton />
+          {/* ── botão voltar (igual NEW) ── */}
+          <div className="mb-8 mt-2">
+            <button
+              onClick={() => router.push("/evaluations")}
+              className="group inline-flex items-center gap-2 text-[0.82rem] font-medium text-slate-500 hover:text-slate-200 transition-colors duration-200"
+            >
+              <span className="w-7 h-7 rounded-lg border border-slate-800 bg-slate-900/60 flex items-center justify-center transition-all duration-200 group-hover:border-violet-500/40 group-hover:bg-violet-500/[0.08] group-hover:-translate-x-0.5">
+                <ArrowLeft size={13} />
+              </span>
+              Voltar para Home
+            </button>
           </div>
 
-          <div className="max-w-2xl mx-auto space-y-10">
+          {/* ── header ── */}
+          <div className="mb-10">
 
-            <div className="space-y-4">
-              <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-violet-500/10 text-violet-400 border border-violet-500/20">
-                Quality Evaluator
-              </div>
-
-              <h1 className="text-4xl font-bold leading-tight">
-                Editar{" "}
-                <span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
-                  Avaliação Técnica
-                </span>
-              </h1>
-
-              <p className="text-slate-400 max-w-xl leading-relaxed">
-                Atualize as métricas do projeto e reavalie sua classificação técnica.
-              </p>
-
-              <div className="h-px bg-gradient-to-r from-transparent via-slate-700 to-transparent" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-violet-500/25 bg-violet-500/[0.08] text-[0.68rem] font-semibold tracking-[0.12em] uppercase text-violet-400 mb-5">
+              <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" />
+              Quality Evaluator
             </div>
 
-            <EvaluationForm
-              initialData={initialData}
-              onSubmit={handleUpdate}
-              loading={loading}
-              submitLabel="Atualizar Avaliação"
-            />
+            <h1 className="font-extrabold text-[clamp(1.9rem,4vw,2.8rem)] leading-[1.1] tracking-[-0.025em] text-white mb-4">
+              Editar{" "}
+              <span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
+                Avaliação Técnica
+              </span>
+            </h1>
 
-            {success && (
-              <div className="text-green-400 text-sm text-center">
-                ✅ Avaliação atualizada com sucesso! Redirecionando...
-              </div>
-            )}
+            <p className="text-[0.88rem] text-slate-400 leading-relaxed max-w-lg font-light">
+              Atualize as métricas do projeto e reavalie automaticamente sua classificação técnica.
+            </p>
 
+            <div className="mt-7 h-px bg-gradient-to-r from-violet-500/20 via-slate-700/60 to-transparent" />
           </div>
+
+          {/* ── form ── */}
+          <EvaluationForm
+            initialData={initialData}
+            onSubmit={handleUpdate}
+            loading={loading}
+            success={success}
+            error={error}
+            submitLabel="Atualizar Avaliação"
+          />
+
         </div>
       </main>
 
