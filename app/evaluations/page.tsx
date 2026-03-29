@@ -166,18 +166,7 @@ export default function Page() {
                 <span className="ml-1 text-slate-600 group-hover:text-violet-400 group-hover:translate-x-1 transition-all duration-300 text-sm">→</span>
               </a>
  
-              {/* minha conta  */}
-              <a href="/account"
-                className="group inline-flex items-center gap-3 px-7 py-3.5 rounded-2xl text-sm text-white border border-sky-400/20 bg-gradient-to-br from-sky-950/50 to-slate-900/80 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-sky-400/40 hover:shadow-[0_14px_36px_rgba(56,189,248,0.18)]">
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-br from-sky-500 to-blue-500 flex-shrink-0 transition-transform duration-300 group-hover:scale-110">
-                  <UserCircle size={15} />
-                </div>
-                <div className="text-left">
-                  <div className="font-bold text-[0.875rem] text-white leading-none mb-0.5">Minha Conta</div>
-                  <div className="text-[0.7rem] text-slate-400 font-normal">Dados pessoais e privacidade</div>
-                </div>
-                <span className="ml-1 text-slate-600 group-hover:text-sky-400 group-hover:translate-x-1 transition-all duration-300 text-sm">→</span>
-              </a>
+             
  
             </div>
           </div>
