@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/app/context/AuthContext";
-import { Home, Clock, PlusSquare, Download, User, LogOut, ChevronDown } from "lucide-react";
+import { Home, Clock, PlusSquare, Download, User, LogOut, ChevronDown, TrendingUp } from "lucide-react";
 import { apiFetch } from "@/app/lib/api";
 
 interface Stats {
@@ -55,9 +55,10 @@ export default function Header() {
 
   const navLinks = [
     { label: "Home",           href: "/evaluations",        icon: <Home size={13} />        },
-    { label: "Histórico",      href: "/evaluations/history",icon: <Clock size={13} />       },
+    { label: "Histórico",      href: "/evaluations/historic",icon: <Clock size={13} />       },
     { label: "Nova Avaliação", href: "/evaluations/new",    icon: <PlusSquare size={13} />  },
-    { label: "Exportar CSV",   href: "/evaluations/export", icon: <Download size={13} />    },
+    { label: "Exportar CSV",   href: "/evaluations/export/csv", icon: <Download size={13} />    },
+    { label: "Dashboard",   href: "/evaluations/dashboard", icon: <TrendingUp size={13} />    },
   ];
 
   return (
