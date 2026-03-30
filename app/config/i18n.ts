@@ -1,6 +1,13 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
+const getLanguage = () => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("lang") || "pt";
+  }
+  return "pt"; 
+};
+
 i18n
   .use(initReactI18next)
   .init({
@@ -33,7 +40,7 @@ i18n
         }
       }
     },
-    lng: localStorage.getItem("lang") || "pt",
+    lng: getLanguage(),
     fallbackLng: "en",
     interpolation: {
       escapeValue: false

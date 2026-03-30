@@ -1,5 +1,3 @@
-"use client";
-
 import "./globals.css";
 import { AuthProvider } from "./context/AuthContext";
 import "./config/i18n";
