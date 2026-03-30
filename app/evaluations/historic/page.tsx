@@ -8,6 +8,7 @@ import EvaluationFilters from "../../components/EvaluationFilters";
 import { apiFetch } from "@/app/lib/api";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, GitBranch, FlaskConical } from "lucide-react";
+import { useTranslation } from "react-i18next";
  
 type Language =
   | "JAVA" | "CSHARP" | "JAVASCRIPT" | "TYPESCRIPT" | "PYTHON"
@@ -28,27 +29,23 @@ interface Evaluation {
   usesGit: boolean;
 }
  
-const classConfig: Record<Classification, { label: string; chip: string; bar: string; score: string }> = {
+const classConfig: Record<Classification, { chip: string; bar: string; score: string }> = {
   EXCELENTE: {
-    label: "Excelente",
     chip:  "text-green-400 bg-green-500/10 border-green-500/30",
     bar:   "bg-green-400",
     score: "text-green-400",
   },
   BOM: {
-    label: "Bom",
     chip:  "text-sky-400 bg-sky-500/10 border-sky-500/30",
     bar:   "bg-sky-400",
     score: "text-sky-400",
   },
   REGULAR: {
-    label: "Regular",
     chip:  "text-yellow-400 bg-yellow-500/10 border-yellow-500/30",
     bar:   "bg-yellow-400",
     score: "text-yellow-400",
   },
   RUIM: {
-    label: "Ruim",
     chip:  "text-red-400 bg-red-500/10 border-red-500/30",
     bar:   "bg-red-400",
     score: "text-red-400",
@@ -56,6 +53,7 @@ const classConfig: Record<Classification, { label: string; chip: string; bar: st
 };
  
 export default function EvaluationsPage() {
+  const { t } = useTranslation();
   const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
   const [page, setPage]               = useState(0);
   const [totalPages, setTotalPages]   = useState(0);
@@ -116,19 +114,18 @@ export default function EvaluationsPage() {
           <div>
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-sky-500/25 bg-sky-500/[0.08] text-[0.68rem] font-semibold tracking-[0.12em] uppercase text-sky-400 mb-5">
               <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse" />
-              Analytics & Monitoramento
+              {t("history.eyebrow")}
             </div>
  
             <h1 className="font-extrabold text-[clamp(1.9rem,4vw,2.8rem)] leading-[1.1] tracking-[-0.025em] text-white mb-4">
-              Histórico de{" "}
+              {t("history.title")}{" "}
               <span className="bg-gradient-to-r from-sky-400 to-violet-400 bg-clip-text text-transparent">
-                Avaliações Técnicas
+                {t("history.titleAccent")}
               </span>
             </h1>
  
             <p className="text-[0.88rem] text-slate-400 leading-relaxed max-w-lg font-light">
-              Explore avaliações realizadas, analise métricas de qualidade
-              e acompanhe a evolução técnica dos projetos avaliados.
+              {t("history.subtitle")}
             </p>
  
             <div className="mt-6 h-px bg-gradient-to-r from-sky-500/20 via-slate-700/60 to-transparent" />
@@ -163,13 +160,14 @@ export default function EvaluationsPage() {
               <div className="w-14 h-14 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center mb-4 text-2xl">
                 🔍
               </div>
-              <p className="text-slate-400 text-sm">Nenhuma avaliação encontrada.</p>
-              <p className="text-slate-600 text-xs mt-1">Tente ajustar os filtros.</p>
+              <p className="text-slate-400 text-sm">{t("common.notFound")}</p>
+              <p className="text-slate-600 text-xs mt-1">{t("common.adjustFilters")}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {evaluations.map((ev) => {
                 const cfg = classConfig[ev.classification];
+                const classLabel = t(`history.classification.${ev.classification}`);
                 return (
                   <Link key={ev.id} href={`/evaluations/historic/${ev.id}`} className="block group">
                     <div className="relative flex flex-col h-full rounded-2xl border border-slate-800 bg-slate-900/50 p-5 transition-all duration-300 group-hover:border-sky-500/35 group-hover:-translate-y-1 group-hover:shadow-[0_16px_40px_rgba(56,189,248,0.1)] overflow-hidden">
@@ -183,14 +181,14 @@ export default function EvaluationsPage() {
                           {ev.projectName}
                         </h2>
                         <span className={`flex-shrink-0 text-[0.65rem] px-2.5 py-1 rounded-full font-bold border uppercase tracking-wide ${cfg.chip}`}>
-                          {cfg.label}
+                          {classLabel}
                         </span>
                       </div>
  
                       {/* ── score bar ── */}
                       <div className="relative z-10 mb-4">
                         <div className="flex justify-between items-center mb-1.5">
-                          <span className="text-[0.68rem] text-slate-500 uppercase tracking-wider">Score</span>
+                          <span className="text-[0.68rem] text-slate-500 uppercase tracking-wider">{t("evaluationDetail.score")}</span>
                           <span className={`font-extrabold text-lg leading-none ${cfg.score}`}>
                             {ev.score}
                             <span className="text-slate-600 font-normal text-xs">/100</span>
@@ -211,13 +209,13 @@ export default function EvaluationsPage() {
                           {ev.hasTests && (
                             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[0.65rem] font-semibold bg-green-500/10 text-green-400 border border-green-500/20">
                               <FlaskConical size={10} />
-                              Testes
+                              {t("history.tests")}
                             </span>
                           )}
                           {ev.usesGit && (
                             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[0.65rem] font-semibold bg-sky-500/10 text-sky-400 border border-sky-500/20">
                               <GitBranch size={10} />
-                              Git
+                              {t("history.git")}
                             </span>
                           )}
                         </div>
@@ -226,7 +224,7 @@ export default function EvaluationsPage() {
                       {/* ── rodapé ── */}
                       <div className="relative z-10 mt-auto pt-3 border-t border-slate-800 flex justify-between items-center text-[0.7rem] text-slate-600">
                         <span>{ev.analyzedBy}</span>
-                        <span>{new Date(ev.createdAt).toLocaleDateString("pt-BR")}</span>
+                        <span>{new Date(ev.createdAt).toLocaleDateString()}</span>
                       </div>
  
                     </div>
@@ -245,7 +243,7 @@ export default function EvaluationsPage() {
                 className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium border border-slate-800 text-slate-400 transition-all duration-200 hover:border-sky-500/40 hover:text-sky-300 hover:bg-sky-500/[0.06] disabled:opacity-30 disabled:cursor-not-allowed"
               >
                 <ChevronLeft size={15} />
-                Anterior
+                {t("common.previous")}
               </button>
  
               <span className="text-[0.78rem] text-slate-500 tabular-nums">
@@ -259,7 +257,7 @@ export default function EvaluationsPage() {
                 onClick={() => setPage((p) => p + 1)}
                 className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium border border-slate-800 text-slate-400 transition-all duration-200 hover:border-sky-500/40 hover:text-sky-300 hover:bg-sky-500/[0.06] disabled:opacity-30 disabled:cursor-not-allowed"
               >
-                Próxima
+                {t("common.next")}
                 <ChevronRight size={15} />
               </button>
             </div>

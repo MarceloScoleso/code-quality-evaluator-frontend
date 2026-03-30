@@ -7,6 +7,7 @@ import BackToHomeButton from "@/app/components/BackToHomeButton";
 import EvaluationFilters from "@/app/components/EvaluationFilters";
 import { apiFetch } from "@/app/lib/api";
 import { Download, FileText, CheckCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
  
 type Language =
   | "JAVA" | "CSHARP" | "JAVASCRIPT" | "TYPESCRIPT" | "PYTHON"
@@ -22,21 +23,10 @@ interface Evaluation {
   hasTests: boolean; usesGit: boolean;
 }
  
-const csvColumns = [
-  { label: "ID",            desc: "Identificador único" },
-  { label: "Projeto",       desc: "Nome do projeto" },
-  { label: "Linguagem",     desc: "Linguagem principal" },
-  { label: "Score",         desc: "Pontuação de 0 a 100" },
-  { label: "Classificação", desc: "EXCELENTE / BOM / REGULAR / RUIM" },
-  { label: "Analisado Por", desc: "Responsável pela análise" },
-  { label: "Data",          desc: "Data de criação" },
-  { label: "Testes",        desc: "Possui testes automatizados" },
-  { label: "Git",           desc: "Usa controle de versão" },
-];
- 
 export default function ExportCsvPage() {
-  const [loading, setLoading]       = useState(false);
-  const [exported, setExported]     = useState(false);
+  const { t } = useTranslation();
+  const [loading, setLoading]         = useState(false);
+  const [exported, setExported]       = useState(false);
   const [exportError, setExportError] = useState<string | null>(null);
  
   const [filterName, setFilterName]                     = useState("");
@@ -46,6 +36,9 @@ export default function ExportCsvPage() {
   const [filterMaxScore, setFilterMaxScore]             = useState<number | "">("");
   const [filterStartDate, setFilterStartDate]           = useState("");
   const [filterEndDate, setFilterEndDate]               = useState("");
+ 
+  const csvColumns = t("exportCsv.cols", { returnObjects: true }) as { label: string; desc: string }[];
+  const csvHeaders = t("exportCsv.csvHeaders", { returnObjects: true }) as string[];
  
   const fetchFilteredEvaluations = async () => {
     const params = new URLSearchParams();
@@ -60,7 +53,7 @@ export default function ExportCsvPage() {
     if (filterEndDate)        params.append("endDate",        filterEndDate);
  
     const res = await apiFetch(`/api/evaluations/filter?${params.toString()}`);
-    if (!res.ok) throw new Error("Erro ao buscar avaliações");
+    if (!res.ok) throw new Error();
     const data = await res.json();
     return Array.isArray(data?.content) ? data.content : [];
   };
@@ -74,20 +67,19 @@ export default function ExportCsvPage() {
       const evaluations: Evaluation[] = await fetchFilteredEvaluations();
  
       if (evaluations.length === 0) {
-        setExportError("Nenhuma avaliação encontrada com os filtros aplicados.");
+        setExportError(t("exportCsv.errorEmpty"));
         return;
       }
  
-      const headers = ["ID","Projeto","Linguagem","Score","Classificação","Analisado Por","Data","Testes","Git"];
       const rows = evaluations.map((ev) => [
         ev.id, ev.projectName, ev.language, ev.score, ev.classification,
         ev.analyzedBy,
-        new Date(ev.createdAt).toLocaleDateString("pt-BR"),
-        ev.hasTests ? "Sim" : "Não",
-        ev.usesGit  ? "Sim" : "Não",
+        new Date(ev.createdAt).toLocaleDateString(),
+        ev.hasTests ? t("exportCsv.yes") : t("exportCsv.no"),
+        ev.usesGit  ? t("exportCsv.yes") : t("exportCsv.no"),
       ]);
  
-      const csvContent = [headers, ...rows].map((r) => r.join(",")).join("\n");
+      const csvContent = [csvHeaders, ...rows].map((r) => r.join(",")).join("\n");
       const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
       const url  = window.URL.createObjectURL(blob);
       const a    = document.createElement("a");
@@ -97,7 +89,7 @@ export default function ExportCsvPage() {
       setExported(true);
       setTimeout(() => setExported(false), 4000);
     } catch {
-      setExportError("Erro ao exportar CSV. Tente novamente.");
+      setExportError(t("exportCsv.errorGeneral"));
     } finally {
       setLoading(false);
     }
@@ -117,19 +109,18 @@ export default function ExportCsvPage() {
           <div>
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-green-500/25 bg-green-500/[0.08] text-[0.68rem] font-semibold tracking-[0.12em] uppercase text-green-400 mb-5">
               <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-              Data Export & Relatórios
+              {t("exportCsv.eyebrow")}
             </div>
  
             <h1 className="font-extrabold text-[clamp(1.9rem,4vw,2.8rem)] leading-[1.1] tracking-[-0.025em] text-white mb-4">
-              Exportação de{" "}
+              {t("exportCsv.title")}{" "}
               <span className="bg-gradient-to-r from-green-400 to-sky-400 bg-clip-text text-transparent">
-                Avaliações em CSV
+                {t("exportCsv.titleAccent")}
               </span>
             </h1>
  
             <p className="text-[0.88rem] text-slate-400 leading-relaxed max-w-lg font-light">
-              Gere relatórios personalizados aplicando filtros estratégicos.
-              O arquivo gerado contém todos os campos relevantes de cada avaliação.
+              {t("exportCsv.subtitle")}
             </p>
  
             <div className="mt-6 h-px bg-gradient-to-r from-green-500/20 via-slate-700/60 to-transparent" />
@@ -145,7 +136,7 @@ export default function ExportCsvPage() {
               </div>
               <div>
                 <p className="text-[0.82rem] font-semibold text-slate-200">evaluations.csv</p>
-                <p className="text-[0.68rem] text-slate-600">{csvColumns.length} colunas exportadas</p>
+                <p className="text-[0.68rem] text-slate-600">{csvColumns.length} {t("exportCsv.columns")}</p>
               </div>
               {/* dots decorativos */}
               <div className="ml-auto flex gap-1.5">
@@ -180,7 +171,7 @@ export default function ExportCsvPage() {
             filterStartDate={filterStartDate}   setFilterStartDate={setFilterStartDate}
             filterEndDate={filterEndDate}       setFilterEndDate={setFilterEndDate}
             onApply={handleExport}
-            buttonLabel="Exportar CSV"
+            buttonLabel={t("nav.exportCsv")}
           />
  
           {/* ── botão principal de exportação ── */}
@@ -193,12 +184,12 @@ export default function ExportCsvPage() {
               {loading ? (
                 <>
                   <span className="w-4 h-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
-                  Gerando arquivo...
+                  {t("exportCsv.generating")}
                 </>
               ) : (
                 <>
                   <Download size={16} />
-                  Baixar CSV completo
+                  {t("exportCsv.download")}
                 </>
               )}
             </button>
@@ -207,7 +198,7 @@ export default function ExportCsvPage() {
             {exported && (
               <div className="flex items-center gap-2.5 px-5 py-2.5 rounded-xl border border-green-500/30 bg-green-500/[0.08] text-green-400 text-sm font-medium animate-pulse">
                 <CheckCircle size={15} />
-                Arquivo exportado com sucesso!
+                {t("exportCsv.success")}
               </div>
             )}
  
@@ -220,8 +211,7 @@ export default function ExportCsvPage() {
             )}
  
             <p className="text-[0.72rem] text-slate-600 text-center max-w-xs">
-              Use os filtros acima para exportar apenas os dados que você precisa.
-              Sem filtros, todas as avaliações serão incluídas.
+              {t("exportCsv.hint")}
             </p>
           </div>
  

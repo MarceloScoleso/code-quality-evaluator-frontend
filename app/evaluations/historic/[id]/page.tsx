@@ -10,6 +10,7 @@ import {
   Pencil, Trash2, FlaskConical, GitBranch,
   Code2, Zap, Hash, CalendarDays, User,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
  
 type Language =
   | "JAVA" | "CSHARP" | "JAVASCRIPT" | "TYPESCRIPT" | "PYTHON"
@@ -39,14 +40,15 @@ const classConfig: Record<Classification, { chip: string; bar: string; glow: str
   RUIM:      { chip: "text-red-400   bg-red-500/10   border-red-500/30",    bar: "from-red-500   to-rose-400",     glow: "shadow-[0_0_40px_rgba(239,68,68,0.15)]",   score: "from-red-400   to-rose-300"     },
 };
  
-const complexityLabels = ["", "Muito Simples", "Simples", "Moderado", "Complexo", "Altamente Complexo"];
- 
 export default function EvaluationDetailPage() {
+  const { t } = useTranslation();
   const { id }   = useParams();
   const router   = useRouter();
   const [evaluation, setEvaluation] = useState<Evaluation | null>(null);
   const [loading, setLoading]       = useState(true);
   const [deleting, setDeleting]     = useState(false);
+ 
+  const complexityLabels = t("evaluationDetail.complexityLabels", { returnObjects: true }) as string[];
  
   useEffect(() => {
     apiFetch(`/api/evaluations/${id}`)
@@ -57,14 +59,14 @@ export default function EvaluationDetailPage() {
   }, [id]);
  
   const handleDelete = async () => {
-    if (!window.confirm("Tem certeza que deseja excluir esta avaliação? Essa ação não pode ser desfeita.")) return;
+    if (!window.confirm(t("common.confirmDelete"))) return;
     try {
       setDeleting(true);
       const res = await apiFetch(`/api/evaluations/${evaluation?.id}`, { method: "DELETE" });
       if (!res.ok) throw new Error();
       router.push("/evaluations/historic");
     } catch {
-      alert("Erro ao excluir avaliação.");
+      alert(t("common.deleteError"));
     } finally {
       setDeleting(false);
     }
@@ -78,7 +80,7 @@ export default function EvaluationDetailPage() {
         <div className="flex-1 flex items-center justify-center">
           <div className="flex items-center gap-3 text-slate-400 text-sm">
             <span className="w-4 h-4 rounded-full border-2 border-violet-500 border-t-transparent animate-spin" />
-            Carregando avaliação...
+            {t("common.loadingEval")}
           </div>
         </div>
       </div>
@@ -103,7 +105,7 @@ export default function EvaluationDetailPage() {
                 className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-[0.82rem] font-semibold border border-sky-500/30 text-sky-400 bg-sky-500/[0.08] transition-all duration-200 hover:-translate-y-0.5 hover:bg-sky-500/[0.15] hover:border-sky-400 hover:shadow-[0_8px_20px_rgba(56,189,248,0.2)]"
               >
                 <Pencil size={13} />
-                Editar
+                {t("common.edit")}
               </button>
               <button
                 onClick={handleDelete}
@@ -111,7 +113,7 @@ export default function EvaluationDetailPage() {
                 className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-[0.82rem] font-semibold border border-red-500/30 text-red-400 bg-red-500/[0.08] transition-all duration-200 hover:-translate-y-0.5 hover:bg-red-500/[0.15] hover:border-red-400 hover:shadow-[0_8px_20px_rgba(239,68,68,0.2)] disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Trash2 size={13} />
-                {deleting ? "Excluindo..." : "Excluir"}
+                {deleting ? t("common.deleting") : t("common.delete")}
               </button>
             </div>
           </div>
@@ -138,7 +140,7 @@ export default function EvaluationDetailPage() {
               {/* info esquerda */}
               <div className="flex-1">
                 <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[0.65rem] font-bold uppercase tracking-wide border mb-4 ${cfg.chip}`}>
-                  {evaluation.classification}
+                  {t(`history.classification.${evaluation.classification}`)}
                 </span>
  
                 <h1 className="font-extrabold text-[clamp(1.6rem,4vw,2.6rem)] leading-[1.1] tracking-[-0.025em] text-white mb-3">
@@ -152,9 +154,7 @@ export default function EvaluationDetailPage() {
                   </span>
                   <span className="inline-flex items-center gap-1.5">
                     <CalendarDays size={13} />
-                    {new Date(evaluation.createdAt).toLocaleDateString("pt-BR", {
-                      day: "2-digit", month: "long", year: "numeric",
-                    })}
+                    {new Date(evaluation.createdAt).toLocaleDateString()}
                   </span>
                   <span className="inline-flex items-center gap-1.5">
                     <Code2 size={13} />
@@ -163,15 +163,14 @@ export default function EvaluationDetailPage() {
                 </div>
  
                 <p className="mt-4 text-[0.85rem] text-slate-500 leading-relaxed max-w-lg font-light">
-                  Relatório completo de qualidade técnica, métricas estruturais
-                  e análise automatizada baseada em critérios objetivos.
+                  {t("evaluationDetail.eyebrow")}
                 </p>
               </div>
  
               {/* score ring direita */}
               <div className={`flex-shrink-0 flex flex-col items-center justify-center rounded-2xl border border-slate-700/60 bg-slate-900/60 backdrop-blur-xl p-8 ${cfg.glow}`}>
                 <span className="text-[0.65rem] font-semibold tracking-[0.1em] uppercase text-slate-500 mb-1">
-                  Score Final
+                  {t("evaluationDetail.scoreFinal")}
                 </span>
                 <div
                   className="w-28 h-28 rounded-full flex flex-col items-center justify-center my-2"
@@ -203,20 +202,20 @@ export default function EvaluationDetailPage() {
             {/* ── card: detalhes técnicos ── */}
             <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-6 space-y-5">
               <div className="flex items-center gap-2.5 text-[0.68rem] font-bold tracking-[0.14em] uppercase text-sky-400 before:block before:w-5 before:h-px before:bg-sky-400">
-                Detalhes Técnicos
+                {t("evaluationDetail.technicalDetails")}
               </div>
  
               <div className="space-y-4">
                 {[
-                  { icon: <Code2 size={14} />,  label: "Linguagem",       value: evaluation.language },
-                  { icon: <Hash size={14} />,   label: "Linhas de Código", value: evaluation.linesOfCode.toLocaleString("pt-BR") },
+                  { icon: <Code2 size={14} />,       label: t("evaluationDetail.language"),    value: evaluation.language },
+                  { icon: <Hash size={14} />,         label: t("evaluationDetail.linesOfCode"), value: evaluation.linesOfCode.toLocaleString() },
                   {
                     icon: <Zap size={14} />,
-                    label: "Complexidade",
+                    label: t("evaluationDetail.complexity"),
                     value: `${evaluation.complexity}/5 — ${complexityLabels[evaluation.complexity] ?? ""}`,
                   },
-                  { icon: <CalendarDays size={14} />, label: "Data",         value: new Date(evaluation.createdAt).toLocaleDateString("pt-BR") },
-                  { icon: <User size={14} />,         label: "Responsável",  value: evaluation.analyzedBy },
+                  { icon: <CalendarDays size={14} />, label: t("evaluationDetail.date"),        value: new Date(evaluation.createdAt).toLocaleDateString() },
+                  { icon: <User size={14} />,         label: t("evaluationDetail.responsible"), value: evaluation.analyzedBy },
                 ].map((row) => (
                   <div key={row.label} className="flex items-start justify-between gap-4 py-2.5 border-b border-slate-800/80 last:border-0">
                     <div className="flex items-center gap-2 text-slate-500 flex-shrink-0">
@@ -233,38 +232,38 @@ export default function EvaluationDetailPage() {
                 {evaluation.hasTests ? (
                   <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[0.75rem] font-semibold bg-green-500/10 text-green-400 border border-green-500/20">
                     <FlaskConical size={12} />
-                    Testes Automatizados
+                    {t("evaluationDetail.hasTests")}
                   </span>
                 ) : (
                   <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[0.75rem] font-semibold bg-slate-800 text-slate-500 border border-slate-700">
                     <FlaskConical size={12} />
-                    Sem Testes
+                    {t("evaluationDetail.noTests")}
                   </span>
                 )}
                 {evaluation.usesGit ? (
                   <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[0.75rem] font-semibold bg-sky-500/10 text-sky-400 border border-sky-500/20">
                     <GitBranch size={12} />
-                    Versionado com Git
+                    {t("evaluationDetail.usesGit")}
                   </span>
                 ) : (
                   <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[0.75rem] font-semibold bg-slate-800 text-slate-500 border border-slate-700">
                     <GitBranch size={12} />
-                    Sem Versionamento
+                    {t("evaluationDetail.noGit")}
                   </span>
                 )}
               </div>
             </div>
  
-            {/* ── card: análise inteligente ── */}
+            {/* ── card: descrição ── */}
             <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-6 space-y-5 flex flex-col">
               <div className="flex items-center gap-2.5 text-[0.68rem] font-bold tracking-[0.14em] uppercase text-violet-400 before:block before:w-5 before:h-px before:bg-violet-400">
-                Descrição
+                {t("evaluationDetail.description")}
               </div>
  
               <div className="flex-1 rounded-xl border border-white/[0.05] bg-white/[0.02] p-5 text-[0.85rem] text-slate-300 leading-relaxed font-light">
                 {evaluation.description || (
                   <span className="text-slate-600 italic">
-                    A análise automática ainda não foi gerada para este projeto.
+                    {t("evaluationDetail.noDescription")}
                   </span>
                 )}
               </div>
@@ -272,9 +271,9 @@ export default function EvaluationDetailPage() {
               {/* mini métricas */}
               <div className="grid grid-cols-3 gap-3 pt-1">
                 {[
-                  { label: "Linhas",      value: evaluation.linesOfCode, color: "text-violet-400", dim: "bg-violet-500/10 border-violet-500/20" },
-                  { label: "Complexidade", value: `${evaluation.complexity}/5`, color: "text-sky-400", dim: "bg-sky-500/10 border-sky-500/20" },
-                  { label: "Score",       value: evaluation.score,       color: "text-green-400",  dim: "bg-green-500/10 border-green-500/20"  },
+                  { label: t("evaluationDetail.lines"),      value: evaluation.linesOfCode, color: "text-violet-400", dim: "bg-violet-500/10 border-violet-500/20" },
+                  { label: t("evaluationDetail.complexity"), value: `${evaluation.complexity}/5`, color: "text-sky-400", dim: "bg-sky-500/10 border-sky-500/20" },
+                  { label: t("evaluationDetail.score"),      value: evaluation.score,       color: "text-green-400",  dim: "bg-green-500/10 border-green-500/20"  },
                 ].map((m) => (
                   <div key={m.label} className={`flex flex-col items-center justify-center py-3 px-2 rounded-xl border ${m.dim} text-center`}>
                     <span className={`font-extrabold text-xl leading-none ${m.color}`}>{m.value}</span>

@@ -12,7 +12,8 @@ import {
   XAxis, YAxis, Tooltip, CartesianGrid,
   ResponsiveContainer, LineChart, Line, Area,
 } from "recharts";
-import { TrendingUp, Award, FlaskConical, GitBranch, LayoutDashboard } from "lucide-react";
+import { TrendingUp, FlaskConical, GitBranch, LayoutDashboard } from "lucide-react";
+import { useTranslation } from "react-i18next";
  
 interface DashboardSummary {
   total: number;
@@ -27,7 +28,6 @@ interface DashboardSummary {
   gitPercentage: number;
 }
  
-/* ── tooltip compartilhado ── */
 const tooltipStyle = {
   contentStyle: {
     backgroundColor: "#0D1117",
@@ -46,6 +46,7 @@ const chartCardCls =
   "rounded-2xl border border-slate-800 bg-slate-900/50 p-6";
  
 export default function DashboardPage() {
+  const { t } = useTranslation();
   const { token, isLoading } = useAuth();
   const router = useRouter();
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
@@ -60,10 +61,9 @@ export default function DashboardPage() {
     apiFetch("/api/evaluations/dashboard")
       .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then(setSummary)
-      .catch(() => setError("Não foi possível carregar o dashboard."));
+      .catch(() => setError(t("dashboard.errorLoad")));
   }, [token]);
  
-  /* ── loading / erro ── */
   if (isLoading || !summary) {
     return (
       <div className="min-h-screen flex flex-col bg-slate-950">
@@ -77,7 +77,7 @@ export default function DashboardPage() {
           ) : (
             <div className="flex items-center gap-3 text-slate-400 text-sm">
               <span className="w-4 h-4 rounded-full border-2 border-violet-500 border-t-transparent animate-spin" />
-              Carregando dashboard...
+              {t("common.loadingDashboard")}
             </div>
           )}
         </div>
@@ -87,10 +87,10 @@ export default function DashboardPage() {
  
   /* ── dados dos gráficos ── */
   const classificationData = [
-    { name: "Excelente", value: summary.excellent, color: "#22C55E" },
-    { name: "Bom",       value: summary.good,      color: "#38BDF8" },
-    { name: "Regular",   value: summary.regular,   color: "#FACC15" },
-    { name: "Ruim",      value: summary.bad,        color: "#EF4444" },
+    { name: t("dashboard.classLabels.EXCELENTE"), value: summary.excellent, color: "#22C55E" },
+    { name: t("dashboard.classLabels.BOM"),       value: summary.good,      color: "#38BDF8" },
+    { name: t("dashboard.classLabels.REGULAR"),   value: summary.regular,   color: "#FACC15" },
+    { name: t("dashboard.classLabels.RUIM"),      value: summary.bad,       color: "#EF4444" },
   ];
  
   const languageData = Object.entries(summary.byLanguage).map(([name, value]) => ({ name, value }));
@@ -102,28 +102,28 @@ export default function DashboardPage() {
   /* ── KPIs ── */
   const kpis = [
     {
-      label: "Total de Avaliações",
+      label: t("dashboard.kpis.total"),
       value: summary.total,
       icon: <LayoutDashboard size={18} />,
       color: "text-violet-400",
       dim: "bg-violet-500/10 border-violet-500/20",
     },
     {
-      label: "Score Médio",
+      label: t("dashboard.kpis.avgScore"),
       value: summary.averageScore.toFixed(1),
       icon: <TrendingUp size={18} />,
       color: "text-sky-400",
       dim: "bg-sky-500/10 border-sky-500/20",
     },
     {
-      label: "% com Testes",
+      label: t("dashboard.kpis.testsPercent"),
       value: `${summary.testsPercentage.toFixed(1)}%`,
       icon: <FlaskConical size={18} />,
       color: "text-green-400",
       dim: "bg-green-500/10 border-green-500/20",
     },
     {
-      label: "% com Git",
+      label: t("dashboard.kpis.gitPercent"),
       value: `${summary.gitPercentage.toFixed(1)}%`,
       icon: <GitBranch size={18} />,
       color: "text-yellow-400",
@@ -145,19 +145,18 @@ export default function DashboardPage() {
           <div>
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-violet-500/25 bg-violet-500/[0.08] text-[0.68rem] font-semibold tracking-[0.12em] uppercase text-violet-400 mb-5">
               <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" />
-              Analytics
+              {t("dashboard.eyebrow")}
             </div>
  
             <h1 className="font-extrabold text-[clamp(1.9rem,4vw,2.8rem)] leading-[1.1] tracking-[-0.025em] text-white mb-4">
-              Dashboard{" "}
+              {t("dashboard.title")}{" "}
               <span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
-                Estratégico
+                {t("dashboard.titleAccent")}
               </span>
             </h1>
  
             <p className="text-[0.88rem] text-slate-400 leading-relaxed max-w-lg font-light">
-              Visualize métricas técnicas, classificação dos projetos e evolução
-              do score médio com base nas avaliações realizadas.
+              {t("dashboard.subtitle")}
             </p>
  
             <div className="mt-6 h-px bg-gradient-to-r from-violet-500/20 via-slate-700/60 to-transparent" />
@@ -188,8 +187,8 @@ export default function DashboardPage() {
           {/* ── barra de progresso de boas práticas ── */}
           <div className="grid sm:grid-cols-2 gap-4">
             {[
-              { label: "Projetos com Testes Automatizados", pct: summary.testsPercentage, color: "from-green-500 to-emerald-400", text: "text-green-400" },
-              { label: "Projetos com Controle Git",         pct: summary.gitPercentage,   color: "from-sky-500 to-blue-400",    text: "text-sky-400"   },
+              { label: t("dashboard.charts.testsPractices"), pct: summary.testsPercentage, color: "from-green-500 to-emerald-400", text: "text-green-400" },
+              { label: t("dashboard.charts.gitPractices"),   pct: summary.gitPercentage,   color: "from-sky-500 to-blue-400",    text: "text-sky-400"   },
             ].map((b) => (
               <div key={b.label} className={`${chartCardCls} flex flex-col gap-3`}>
                 <div className="flex justify-between items-center">
@@ -211,7 +210,7 @@ export default function DashboardPage() {
  
             {/* pizza — classificação */}
             <div className={chartCardCls}>
-              <div className={sectionTagCls}>Distribuição por Classificação</div>
+              <div className={sectionTagCls}>{t("dashboard.charts.classification")}</div>
               <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
                   <defs>
@@ -230,8 +229,8 @@ export default function DashboardPage() {
                     innerRadius={58}
                     paddingAngle={4}
                     label={({ name, percent }) =>
-  `${name} ${((percent ?? 0) * 100).toFixed(0)}%`
-}
+                      `${name} ${((percent ?? 0) * 100).toFixed(0)}%`
+                    }
                     labelLine={false}
                   >
                     {classificationData.map((d) => (
@@ -255,7 +254,7 @@ export default function DashboardPage() {
  
             {/* barras — linguagem */}
             <div className={chartCardCls}>
-              <div className={sectionTagCls}>Projetos por Linguagem</div>
+              <div className={sectionTagCls}>{t("dashboard.charts.byLanguage")}</div>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={languageData} barSize={28}>
                   <defs>
@@ -277,7 +276,7 @@ export default function DashboardPage() {
  
           {/* ── evolução do score ── */}
           <div className={chartCardCls}>
-            <div className={sectionTagCls}>Evolução do Score Médio</div>
+            <div className={sectionTagCls}>{t("dashboard.charts.scoreEvolution")}</div>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={scoreEvolution} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
                 <defs>
@@ -292,9 +291,9 @@ export default function DashboardPage() {
                 <Tooltip
                   {...tooltipStyle}
                   formatter={(value: number | undefined) => [
-  (value ?? 0).toFixed(1),
-  "Score Médio",
-]}
+                    (value ?? 0).toFixed(1),
+                    t("dashboard.charts.avgScore"),
+                  ]}
                 />
                 <Area type="monotone" dataKey="score" stroke="none" fill="url(#areaGrad)" />
                 <Line
@@ -311,7 +310,7 @@ export default function DashboardPage() {
  
           {/* ── breakdown de classificação ── */}
           <div className={chartCardCls}>
-            <div className={sectionTagCls}>Breakdown por Classificação</div>
+            <div className={sectionTagCls}>{t("dashboard.charts.breakdown")}</div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-2">
               {classificationData.map((d) => {
                 const pct = summary.total > 0 ? ((d.value / summary.total) * 100).toFixed(1) : "0.0";
@@ -324,7 +323,7 @@ export default function DashboardPage() {
                     <div className="h-1 rounded-full bg-white/[0.05] overflow-hidden">
                       <div className="h-full rounded-full transition-all duration-700" style={{ width: `${pct}%`, background: d.color }} />
                     </div>
-                    <span className="text-[0.65rem] text-slate-600">{pct}% do total</span>
+                    <span className="text-[0.65rem] text-slate-600">{pct} {t("dashboard.charts.ofTotal")}</span>
                   </div>
                 );
               })}
