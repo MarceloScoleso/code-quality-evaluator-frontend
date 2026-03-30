@@ -1,50 +1,471 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
-const getLanguage = () => {
-  if (typeof window !== "undefined") {
-    return localStorage.getItem("lang") || "pt";
-  }
-  return "pt"; 
-};
-
 i18n
   .use(initReactI18next)
   .init({
     resources: {
       pt: {
         translation: {
-          home: "Home",
-          dashboard: "Dashboard",
-          newEvaluation: "Nova Avaliação",
-          exportCsv: "Exportar CSV",
-          history: "Histórico"
-        }
+          nav: {
+            home:          "Home",
+            history:       "Histórico",
+            newEvaluation: "Nova Avaliação",
+            exportCsv:     "Exportar CSV",
+            dashboard:     "Dashboard",
+          },
+          header: {
+            subtitle:    "Plataforma de Análise Técnica",
+            description: "Avalie projetos com métricas estruturais — complexidade, testes e versionamento.",
+            myAccount:   "Minha Conta",
+            profile:     "Perfil",
+            logout:      "Sair da conta",
+            stats: {
+              evaluations:  "Avaliações",
+              averageScore: "Score Médio",
+              excellent:    "Excelentes",
+            },
+          },
+          landing: {
+            nav: {
+              login:    "Entrar",
+              register: "Criar Conta",
+            },
+            hero: {
+              eyebrow:    "Plataforma de Avaliação Técnica",
+              titleLine1: "Eleve o padrão dos",
+              titleLine2: "seus projetos de software",
+              subtitle:   "Avalie projetos com métricas técnicas, gere classificações automáticas e acompanhe indicadores estratégicos em um dashboard interativo.",
+              ctaStart:   "Começar agora →",
+              ctaLogin:   "Já tenho conta",
+            },
+            stats: {
+              levels:     "4 níveis",
+              levelsSub:  "de classificação",
+              auto:       "100%",
+              autoSub:    "automatizado",
+              metrics:    "N métricas",
+              metricsSub: "por projeto",
+              dashboard:  "Dashboard",
+              dashSub:    "em tempo real",
+            },
+            howItWorks: {
+              eyebrow:    "Como funciona",
+              title:      "Três passos para",
+              titleAccent:"decisões mais inteligentes",
+              subtitle:   "Fluxo simples, estratégico e orientado a dados para elevar o padrão de qualidade dos seus projetos.",
+              steps: [
+                {
+                  title: "Informe as métricas do projeto",
+                  description: "Preencha dados como linguagem utilizada, complexidade, presença de testes automatizados e uso de controle de versão.",
+                },
+                {
+                  title: "Receba uma classificação automática",
+                  description: "O sistema processa as métricas e gera um score técnico com classificação baseada em critérios estruturais e boas práticas.",
+                },
+                {
+                  title: "Acompanhe indicadores estratégicos",
+                  description: "Visualize histórico, aplique filtros avançados e acompanhe métricas consolidadas em um dashboard para tomada de decisão.",
+                },
+              ],
+              mockup: {
+                testCoverage:         "Cobertura de testes",
+                structuralComplexity: "Complexidade estrutural",
+                versionControl:       "Controle de versão",
+                bestPractices:        "Boas práticas",
+                classification:       "Classificação: Excelente",
+              },
+            },
+            cta: {
+              eyebrow:    "Comece agora",
+              title:      "Pronto para classificar",
+              titleAccent:"seus projetos?",
+              subtitle:   "Crie sua conta gratuitamente e comece a avaliar a qualidade técnica dos seus projetos hoje mesmo.",
+              features: [
+                "Classificação automática de projetos",
+                "Dashboard com indicadores em tempo real",
+                "Histórico completo e filtros avançados",
+              ],
+              createAccount: "Criar conta grátis →",
+              alreadyHave:   "Já tenho conta",
+            },
+          },
+          login: {
+            eyebrow:    "Plataforma Técnica",
+            title:      "Qualidade de software",
+            titleAccent:"começa aqui.",
+            subtitle:   "Avalie, classifique e acompanhe seus projetos com métricas estruturais e boas práticas de engenharia.",
+            features: [
+              { title: "Classificação automática", desc: "Score técnico gerado em segundos"       },
+              { title: "Dashboard interativo",     desc: "Métricas consolidadas em tempo real"    },
+              { title: "Filtros avançados",        desc: "Histórico com rastreabilidade total"    },
+            ],
+            footer:       "Avaliação Estratégica de Software",
+            formTitle:    "Bem-vindo",
+            formAccent:   "de volta",
+            formSubtitle: "Acesse sua conta para continuar avaliando projetos",
+            email:        "E-mail",
+            emailPlaceholder: "seu@email.com",
+            password:     "Senha",
+            submit:       "Entrar na plataforma →",
+            noAccount:    "Não possui conta?",
+            createNow:    "Criar agora",
+            invalidCredentials: "Credenciais inválidas",
+            hidePassword: "Ocultar senha",
+            showPassword: "Mostrar senha",
+          },
+          register: {
+            eyebrow:    "Cadastro gratuito",
+            title:      "Comece a avaliar",
+            titleAccent:"em minutos.",
+            subtitle:   "Crie sua conta e tenha acesso imediato à plataforma de classificação estratégica de projetos de software.",
+            steps: [
+              { label: "Crie sua conta",         desc: "Preencha os dados ao lado"    },
+              { label: "Cadastre seus projetos", desc: "Informe as métricas técnicas" },
+              { label: "Receba a classificação", desc: "Score automático em segundos" },
+            ],
+            footer:      "Avaliação Estratégica de Software",
+            formTitle:   "Criar",
+            formAccent:  "nova conta",
+            formSubtitle:"Preencha os dados abaixo para começar",
+            name:        "Nome completo",
+            namePlaceholder: "Seu nome",
+            email:       "E-mail",
+            emailPlaceholder: "seu@email.com",
+            password:    "Senha",
+            passwordReqs: {
+              title:    "Requisitos da senha",
+              length:   "Mínimo de 8 caracteres",
+              uppercase:"Ao menos uma letra maiúscula",
+              number:   "Ao menos um número",
+            },
+            strength: {
+              weak:   "Fraca",
+              medium: "Média",
+              strong: "Forte",
+            },
+            submit:       "Criar conta grátis →",
+            submitting:   "Criando conta...",
+            alreadyHave:  "Já possui conta?",
+            loginNow:     "Entrar agora",
+            errorInvalid: "A senha não atende todos os requisitos.",
+            errorServer:  "Erro ao registrar usuário. Tente novamente.",
+            errorConnect: "Não foi possível conectar ao servidor.",
+            hidePassword: "Ocultar senha",
+            showPassword: "Mostrar senha",
+          },
+        },
       },
+
       en: {
         translation: {
-          home: "Home",
-          dashboard: "Dashboard",
-          newEvaluation: "New Evaluation",
-          exportCsv: "Export CSV",
-          history: "History"
-        }
+          nav: {
+            home:          "Home",
+            history:       "History",
+            newEvaluation: "New Evaluation",
+            exportCsv:     "Export CSV",
+            dashboard:     "Dashboard",
+          },
+          header: {
+            subtitle:    "Technical Analysis Platform",
+            description: "Evaluate projects with structural metrics — complexity, tests and versioning.",
+            myAccount:   "My Account",
+            profile:     "Profile",
+            logout:      "Sign out",
+            stats: {
+              evaluations:  "Evaluations",
+              averageScore: "Avg Score",
+              excellent:    "Excellent",
+            },
+          },
+          landing: {
+            nav: {
+              login:    "Sign in",
+              register: "Create Account",
+            },
+            hero: {
+              eyebrow:    "Technical Evaluation Platform",
+              titleLine1: "Elevate the standard of",
+              titleLine2: "your software projects",
+              subtitle:   "Evaluate projects with technical metrics, generate automatic classifications and track strategic indicators in an interactive dashboard.",
+              ctaStart:   "Get started →",
+              ctaLogin:   "I already have an account",
+            },
+            stats: {
+              levels:     "4 levels",
+              levelsSub:  "of classification",
+              auto:       "100%",
+              autoSub:    "automated",
+              metrics:    "N metrics",
+              metricsSub: "per project",
+              dashboard:  "Dashboard",
+              dashSub:    "real time",
+            },
+            howItWorks: {
+              eyebrow:     "How it works",
+              title:       "Three steps for",
+              titleAccent: "smarter decisions",
+              subtitle:    "Simple, strategic, data-driven flow to raise the quality standard of your projects.",
+              steps: [
+                {
+                  title: "Enter project metrics",
+                  description: "Fill in data such as language used, complexity, presence of automated tests and use of version control.",
+                },
+                {
+                  title: "Receive an automatic classification",
+                  description: "The system processes the metrics and generates a technical score with classification based on structural criteria and best practices.",
+                },
+                {
+                  title: "Track strategic indicators",
+                  description: "View history, apply advanced filters and track consolidated metrics in a dashboard for decision making.",
+                },
+              ],
+              mockup: {
+                testCoverage:         "Test coverage",
+                structuralComplexity: "Structural complexity",
+                versionControl:       "Version control",
+                bestPractices:        "Best practices",
+                classification:       "Classification: Excellent",
+              },
+            },
+            cta: {
+              eyebrow:     "Get started",
+              title:       "Ready to classify",
+              titleAccent: "your projects?",
+              subtitle:    "Create your account for free and start evaluating the technical quality of your projects today.",
+              features: [
+                "Automatic project classification",
+                "Dashboard with real-time indicators",
+                "Complete history and advanced filters",
+              ],
+              createAccount: "Create free account →",
+              alreadyHave:   "I already have an account",
+            },
+          },
+          login: {
+            eyebrow:    "Technical Platform",
+            title:      "Software quality",
+            titleAccent:"starts here.",
+            subtitle:   "Evaluate, classify and track your projects with structural metrics and engineering best practices.",
+            features: [
+              { title: "Automatic classification", desc: "Technical score generated in seconds"  },
+              { title: "Interactive dashboard",    desc: "Consolidated metrics in real time"      },
+              { title: "Advanced filters",         desc: "History with full traceability"         },
+            ],
+            footer:       "Strategic Software Evaluation",
+            formTitle:    "Welcome",
+            formAccent:   "back",
+            formSubtitle: "Access your account to continue evaluating projects",
+            email:        "E-mail",
+            emailPlaceholder: "your@email.com",
+            password:     "Password",
+            submit:       "Sign in to platform →",
+            noAccount:    "Don't have an account?",
+            createNow:    "Create now",
+            invalidCredentials: "Invalid credentials",
+            hidePassword: "Hide password",
+            showPassword: "Show password",
+          },
+          register: {
+            eyebrow:    "Free registration",
+            title:      "Start evaluating",
+            titleAccent:"in minutes.",
+            subtitle:   "Create your account and get immediate access to the strategic software project classification platform.",
+            steps: [
+              { label: "Create your account",    desc: "Fill in the form on the right" },
+              { label: "Register your projects", desc: "Enter technical metrics"        },
+              { label: "Receive classification", desc: "Automatic score in seconds"    },
+            ],
+            footer:      "Strategic Software Evaluation",
+            formTitle:   "Create",
+            formAccent:  "new account",
+            formSubtitle:"Fill in the details below to get started",
+            name:        "Full name",
+            namePlaceholder: "Your name",
+            email:       "E-mail",
+            emailPlaceholder: "your@email.com",
+            password:    "Password",
+            passwordReqs: {
+              title:    "Password requirements",
+              length:   "Minimum 8 characters",
+              uppercase:"At least one uppercase letter",
+              number:   "At least one number",
+            },
+            strength: {
+              weak:   "Weak",
+              medium: "Medium",
+              strong: "Strong",
+            },
+            submit:       "Create free account →",
+            submitting:   "Creating account...",
+            alreadyHave:  "Already have an account?",
+            loginNow:     "Sign in now",
+            errorInvalid: "Password does not meet all requirements.",
+            errorServer:  "Error registering user. Please try again.",
+            errorConnect: "Could not connect to the server.",
+            hidePassword: "Hide password",
+            showPassword: "Show password",
+          },
+        },
       },
+
       es: {
         translation: {
-          home: "Inicio",
-          dashboard: "Panel",
-          newEvaluation: "Nueva Evaluación",
-          exportCsv: "Exportar CSV",
-          history: "Historial"
-        }
-      }
+          nav: {
+            home:          "Inicio",
+            history:       "Historial",
+            newEvaluation: "Nueva Evaluación",
+            exportCsv:     "Exportar CSV",
+            dashboard:     "Panel",
+          },
+          header: {
+            subtitle:    "Plataforma de Análisis Técnico",
+            description: "Evalúa proyectos con métricas estructurales — complejidad, pruebas y versionado.",
+            myAccount:   "Mi Cuenta",
+            profile:     "Perfil",
+            logout:      "Cerrar sesión",
+            stats: {
+              evaluations:  "Evaluaciones",
+              averageScore: "Score Medio",
+              excellent:    "Excelentes",
+            },
+          },
+          landing: {
+            nav: {
+              login:    "Iniciar sesión",
+              register: "Crear Cuenta",
+            },
+            hero: {
+              eyebrow:    "Plataforma de Evaluación Técnica",
+              titleLine1: "Eleva el estándar de",
+              titleLine2: "tus proyectos de software",
+              subtitle:   "Evalúa proyectos con métricas técnicas, genera clasificaciones automáticas y realiza seguimiento de indicadores estratégicos en un dashboard interactivo.",
+              ctaStart:   "Comenzar ahora →",
+              ctaLogin:   "Ya tengo cuenta",
+            },
+            stats: {
+              levels:     "4 niveles",
+              levelsSub:  "de clasificación",
+              auto:       "100%",
+              autoSub:    "automatizado",
+              metrics:    "N métricas",
+              metricsSub: "por proyecto",
+              dashboard:  "Dashboard",
+              dashSub:    "en tiempo real",
+            },
+            howItWorks: {
+              eyebrow:     "Cómo funciona",
+              title:       "Tres pasos para",
+              titleAccent: "decisiones más inteligentes",
+              subtitle:    "Flujo simple, estratégico y orientado a datos para elevar el estándar de calidad de tus proyectos.",
+              steps: [
+                {
+                  title: "Ingresa las métricas del proyecto",
+                  description: "Completa datos como lenguaje utilizado, complejidad, presencia de pruebas automatizadas y uso de control de versiones.",
+                },
+                {
+                  title: "Recibe una clasificación automática",
+                  description: "El sistema procesa las métricas y genera un score técnico con clasificación basada en criterios estructurales y buenas prácticas.",
+                },
+                {
+                  title: "Realiza seguimiento de indicadores estratégicos",
+                  description: "Visualiza el historial, aplica filtros avanzados y realiza seguimiento de métricas consolidadas en un dashboard para la toma de decisiones.",
+                },
+              ],
+              mockup: {
+                testCoverage:         "Cobertura de pruebas",
+                structuralComplexity: "Complejidad estructural",
+                versionControl:       "Control de versiones",
+                bestPractices:        "Buenas prácticas",
+                classification:       "Clasificación: Excelente",
+              },
+            },
+            cta: {
+              eyebrow:     "Comenzar ahora",
+              title:       "¿Listo para clasificar",
+              titleAccent: "tus proyectos?",
+              subtitle:    "Crea tu cuenta gratuitamente y comienza a evaluar la calidad técnica de tus proyectos hoy mismo.",
+              features: [
+                "Clasificación automática de proyectos",
+                "Dashboard con indicadores en tiempo real",
+                "Historial completo y filtros avanzados",
+              ],
+              createAccount: "Crear cuenta gratis →",
+              alreadyHave:   "Ya tengo cuenta",
+            },
+          },
+          login: {
+            eyebrow:    "Plataforma Técnica",
+            title:      "La calidad del software",
+            titleAccent:"empieza aquí.",
+            subtitle:   "Evalúa, clasifica y realiza seguimiento de tus proyectos con métricas estructurales y buenas prácticas de ingeniería.",
+            features: [
+              { title: "Clasificación automática", desc: "Score técnico generado en segundos"   },
+              { title: "Dashboard interactivo",    desc: "Métricas consolidadas en tiempo real" },
+              { title: "Filtros avanzados",        desc: "Historial con trazabilidad total"     },
+            ],
+            footer:       "Evaluación Estratégica de Software",
+            formTitle:    "Bienvenido",
+            formAccent:   "de nuevo",
+            formSubtitle: "Accede a tu cuenta para continuar evaluando proyectos",
+            email:        "Correo electrónico",
+            emailPlaceholder: "tu@correo.com",
+            password:     "Contraseña",
+            submit:       "Iniciar sesión →",
+            noAccount:    "¿No tienes cuenta?",
+            createNow:    "Crear ahora",
+            invalidCredentials: "Credenciales inválidas",
+            hidePassword: "Ocultar contraseña",
+            showPassword: "Mostrar contraseña",
+          },
+          register: {
+            eyebrow:    "Registro gratuito",
+            title:      "Comienza a evaluar",
+            titleAccent:"en minutos.",
+            subtitle:   "Crea tu cuenta y obtén acceso inmediato a la plataforma de clasificación estratégica de proyectos de software.",
+            steps: [
+              { label: "Crea tu cuenta",          desc: "Completa el formulario"           },
+              { label: "Registra tus proyectos",  desc: "Ingresa las métricas técnicas"    },
+              { label: "Recibe la clasificación", desc: "Score automático en segundos"     },
+            ],
+            footer:      "Evaluación Estratégica de Software",
+            formTitle:   "Crear",
+            formAccent:  "nueva cuenta",
+            formSubtitle:"Completa los datos a continuación para comenzar",
+            name:        "Nombre completo",
+            namePlaceholder: "Tu nombre",
+            email:       "Correo electrónico",
+            emailPlaceholder: "tu@correo.com",
+            password:    "Contraseña",
+            passwordReqs: {
+              title:    "Requisitos de contraseña",
+              length:   "Mínimo 8 caracteres",
+              uppercase:"Al menos una letra mayúscula",
+              number:   "Al menos un número",
+            },
+            strength: {
+              weak:   "Débil",
+              medium: "Media",
+              strong: "Fuerte",
+            },
+            submit:       "Crear cuenta gratis →",
+            submitting:   "Creando cuenta...",
+            alreadyHave:  "¿Ya tienes cuenta?",
+            loginNow:     "Iniciar sesión",
+            errorInvalid: "La contraseña no cumple todos los requisitos.",
+            errorServer:  "Error al registrar usuario. Inténtalo de nuevo.",
+            errorConnect: "No se pudo conectar al servidor.",
+            hidePassword: "Ocultar contraseña",
+            showPassword: "Mostrar contraseña",
+          },
+        },
+      },
     },
-    lng: getLanguage(),
-    fallbackLng: "en",
-    interpolation: {
-      escapeValue: false
-    }
+    lng: typeof window !== "undefined"
+      ? (localStorage.getItem("lang") || "pt")
+      : "pt",
+    fallbackLng: "pt",
+    interpolation: { escapeValue: false },
   });
 
 export default i18n;

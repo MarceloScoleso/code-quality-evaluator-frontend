@@ -7,6 +7,8 @@ import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/app/context/AuthContext";
 import { Home, Clock, PlusSquare, Download, User, LogOut, ChevronDown, TrendingUp } from "lucide-react";
 import { apiFetch } from "@/app/lib/api";
+import LanguageSwitcher from "@/app/components/LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 interface Stats {
   total: number;
@@ -18,6 +20,7 @@ export default function Header() {
   const { logout } = useAuth();
   const router     = useRouter();
   const pathname   = usePathname();
+  const { t }      = useTranslation();
 
   const [stats, setStats]       = useState<Stats>({ total: 0, averageScore: 0, excellentCount: 0 });
   const [loading, setLoading]   = useState(true);
@@ -48,17 +51,17 @@ export default function Header() {
   }
 
   const statItems = [
-    { label: "Avaliações",  value: stats.total,         color: "text-violet-400", bg: "bg-violet-500/10 border-violet-500/20" },
-    { label: "Score Médio", value: stats.averageScore,  color: "text-sky-400",    bg: "bg-sky-500/10 border-sky-500/20"       },
-    { label: "Excelentes",  value: stats.excellentCount,color: "text-green-400",  bg: "bg-green-500/10 border-green-500/20"   },
+    { label: t("header.stats.evaluations"),  value: stats.total,          color: "text-violet-400", bg: "bg-violet-500/10 border-violet-500/20" },
+    { label: t("header.stats.averageScore"), value: stats.averageScore,   color: "text-sky-400",    bg: "bg-sky-500/10 border-sky-500/20"       },
+    { label: t("header.stats.excellent"),    value: stats.excellentCount, color: "text-green-400",  bg: "bg-green-500/10 border-green-500/20"   },
   ];
 
   const navLinks = [
-    { label: "Home",           href: "/evaluations",        icon: <Home size={13} />        },
-    { label: "Histórico",      href: "/evaluations/historic",icon: <Clock size={13} />       },
-    { label: "Nova Avaliação", href: "/evaluations/new",    icon: <PlusSquare size={13} />  },
-    { label: "Exportar CSV",   href: "/evaluations/export/csv", icon: <Download size={13} />    },
-    { label: "Dashboard",   href: "/evaluations/dashboard", icon: <TrendingUp size={13} />    },
+    { label: t("nav.home"),          href: "/evaluations",            icon: <Home size={13} />       },
+    { label: t("nav.history"),       href: "/evaluations/historic",   icon: <Clock size={13} />      },
+    { label: t("nav.newEvaluation"), href: "/evaluations/new",        icon: <PlusSquare size={13} /> },
+    { label: t("nav.exportCsv"),     href: "/evaluations/export/csv", icon: <Download size={13} />   },
+    { label: t("nav.dashboard"),     href: "/evaluations/dashboard",  icon: <TrendingUp size={13} /> },
   ];
 
   return (
@@ -90,10 +93,10 @@ export default function Header() {
             </Link>
             <div>
               <p className="text-[0.78rem] font-semibold tracking-[0.12em] uppercase text-violet-400 mb-1.5">
-                Plataforma de Análise Técnica
+                {t("header.subtitle")}
               </p>
               <p className="text-[0.85rem] text-slate-400 leading-relaxed font-light">
-                Avalie projetos com métricas estruturais — complexidade, testes e versionamento.
+                {t("header.description")}
               </p>
             </div>
           </div>
@@ -121,7 +124,7 @@ export default function Header() {
         {/* ── divisor ── */}
         <div className="h-px bg-gradient-to-r from-transparent via-slate-800 to-transparent" />
 
-        {/* ── linha 2: nav + conta ── */}
+        {/* ── linha 2: nav + language switcher + conta ── */}
         <div className="flex items-center justify-between gap-4 flex-wrap">
 
           {/* nav links */}
@@ -147,41 +150,48 @@ export default function Header() {
             })}
           </nav>
 
-          {/* botão minha conta + dropdown */}
-          <div className="relative" ref={menuRef}>
-            <button
-              onClick={() => setMenuOpen((v) => !v)}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[0.8rem] font-semibold border border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-slate-100 transition-all duration-200"
-            >
-              <User size={13} />
-              Minha Conta
-              <ChevronDown size={12} className={`opacity-50 transition-transform duration-200 ${menuOpen ? "rotate-180" : ""}`} />
-            </button>
+          {/* lado direito: language switcher + minha conta */}
+          <div className="flex items-center gap-3">
 
-            {menuOpen && (
-              <div className="absolute right-0 top-[calc(100%+8px)] z-50 w-44 rounded-2xl border border-slate-700/60 bg-slate-900/95 backdrop-blur-md shadow-xl py-1.5">
-                <Link
-                  href="/account"
-                  onClick={() => setMenuOpen(false)}
-                  className="flex items-center gap-2.5 px-4 py-2.5 text-[0.8rem] text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-150 rounded-xl mx-1"
-                >
-                  <User size={13} />
-                  Perfil
-                </Link>
-                <div className="my-1 h-px bg-slate-700/50 mx-3" />
-                <button
-                  onClick={handleLogout}
-                  className="w-full flex items-center gap-2.5 px-4 py-2.5 text-[0.8rem] text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all duration-150 rounded-xl mx-1"
-                  style={{ width: "calc(100% - 8px)" }}
-                >
-                  <LogOut size={13} />
-                  Sair da conta
-                </button>
-              </div>
-            )}
+            {/* 👇 language switcher aqui */}
+            <LanguageSwitcher />
+
+            {/* botão minha conta + dropdown */}
+            <div className="relative" ref={menuRef}>
+              <button
+                onClick={() => setMenuOpen((v) => !v)}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[0.8rem] font-semibold border border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-slate-100 transition-all duration-200"
+              >
+                <User size={13} />
+                {t("header.myAccount")}
+                <ChevronDown size={12} className={`opacity-50 transition-transform duration-200 ${menuOpen ? "rotate-180" : ""}`} />
+              </button>
+
+              {menuOpen && (
+                <div className="absolute right-0 top-[calc(100%+8px)] z-50 w-44 rounded-2xl border border-slate-700/60 bg-slate-900/95 backdrop-blur-md shadow-xl py-1.5">
+                  <Link
+                    href="/account"
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center gap-2.5 px-4 py-2.5 text-[0.8rem] text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-150 rounded-xl mx-1"
+                  >
+                    <User size={13} />
+                    {t("header.profile")}
+                  </Link>
+                  <div className="my-1 h-px bg-slate-700/50 mx-3" />
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-[0.8rem] text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all duration-150 rounded-xl mx-1"
+                    style={{ width: "calc(100% - 8px)" }}
+                  >
+                    <LogOut size={13} />
+                    {t("header.logout")}
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
 
+        </div>
       </div>
     </header>
   );
