@@ -2,7 +2,7 @@
 
 import "./globals.css";
 import { AuthProvider } from "./context/AuthContext";
-import "../config/i18n";
+import "./config/i18n";
 import LanguageSwitcher from "./components/LanguageSwitcher";
 
 export default function RootLayout({
