@@ -127,6 +127,7 @@ i18n
             submitting:     "Processando...",
             success:        "Avaliação criada com sucesso! Redirecionando...",
             langOther:      "Outra",
+            aiLangLabel: "Idioma da descrição gerada pela IA",
           },
           history: {
             eyebrow:   "Analytics & Monitoramento",
@@ -433,6 +434,7 @@ i18n
             submitting:     "Processing...",
             success:        "Evaluation created successfully! Redirecting...",
             langOther:      "Other",
+            aiLangLabel: "Language for AI-generated description",
           },
           history: {
             eyebrow:    "Analytics & Monitoring",
@@ -650,6 +652,7 @@ i18n
             descriptionHint: "Opcional — si no se completa, el sistema lo generará automáticamente.",
             submit: "Generar Evaluación Técnica", submitting: "Procesando...",
             success: "¡Evaluación creada exitosamente! Redirigiendo...", langOther: "Otro",
+            aiLangLabel: "Idioma de la descripción generada por IA",
           },
           history: {
             eyebrow: "Analytics y Monitoreo", title: "Historial de", titleAccent: "Evaluaciones Técnicas",
