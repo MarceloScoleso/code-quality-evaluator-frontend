@@ -1,29 +1,32 @@
+"use client";
+
 export const dynamic = "force-dynamic";
 
-"use client";
- 
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
- 
+
 export default function GitHubCallbackPage() {
   const params = useSearchParams();
- 
+
   useEffect(() => {
     const code  = params.get("code");
     const error = params.get("error");
- 
+
     if (error) {
       if (window.opener) {
-        window.opener.postMessage({ type: "github_oauth_callback", error }, window.location.origin);
+        window.opener.postMessage(
+          { type: "github_oauth_callback", error },
+          window.location.origin
+        );
         window.close();
       } else {
         window.location.href = "/evaluations/new?github_error=" + error;
       }
       return;
     }
- 
+
     if (!code) return;
- 
+
     if (window.opener) {
       window.opener.postMessage(
         { type: "github_oauth_callback", code },
@@ -35,7 +38,7 @@ export default function GitHubCallbackPage() {
       window.location.href = "/evaluations/new";
     }
   }, [params]);
- 
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-950 text-slate-400 text-sm">
       <div className="flex items-center gap-3">
