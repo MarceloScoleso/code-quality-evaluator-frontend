@@ -327,8 +327,7 @@ i18n
             errorInvalid: "A senha não atende todos os requisitos.", errorServer: "Erro ao registrar usuário. Tente novamente.",
             errorConnect: "Não foi possível conectar ao servidor.", hidePassword: "Ocultar senha", showPassword: "Mostrar senha",
           },
-        },
-        github: {
+          github: {
   loading: "Verificando integração...",
   connect: {
     title: "Conecte sua conta GitHub",
@@ -354,6 +353,7 @@ i18n
     analyze: "Erro ao analisar repositório."
   }
 },
+        },
       },
 
       en: {
@@ -598,8 +598,7 @@ i18n
             errorInvalid: "Password does not meet all requirements.", errorServer: "Error registering user. Please try again.",
             errorConnect: "Could not connect to the server.", hidePassword: "Hide password", showPassword: "Show password",
           },
-        },
-        github: {
+          github: {
   loading: "Checking integration...",
   connect: {
     title: "Connect your GitHub account",
@@ -625,6 +624,7 @@ i18n
     analyze: "Error analyzing repository."
   }
 },
+        },
       },
 
       es: {
@@ -803,8 +803,7 @@ i18n
             errorInvalid: "La contraseña no cumple todos los requisitos.", errorServer: "Error al registrar usuario. Inténtalo de nuevo.",
             errorConnect: "No se pudo conectar al servidor.", hidePassword: "Ocultar contraseña", showPassword: "Mostrar contraseña",
           },
-        },
-        github: {
+          github: {
   loading: "Verificando integración...",
   connect: {
     title: "Conecta tu cuenta de GitHub",
@@ -829,7 +828,8 @@ i18n
   errors: {
     analyze: "Error al analizar el repositorio."
   }
-}
+},
+        },
       },
     },
     lng: typeof window !== "undefined" ? (localStorage.getItem("lang") || "pt") : "pt",
