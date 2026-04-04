@@ -1,15 +1,10 @@
+export const dynamic = "force-dynamic";
+
 "use client";
  
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
  
-/**
- * Esta página fica em /auth/github/callback
- * O GitHub redireciona aqui com ?code=XXX&state=YYY
- *
- * Se aberta em popup: envia o code para a janela pai via postMessage e fecha.
- * Se aberta na mesma aba: salva o code no sessionStorage e redireciona para /evaluations/new.
- */
 export default function GitHubCallbackPage() {
   const params = useSearchParams();
  
@@ -30,14 +25,12 @@ export default function GitHubCallbackPage() {
     if (!code) return;
  
     if (window.opener) {
-      // popup flow: notifica a janela pai e fecha
       window.opener.postMessage(
         { type: "github_oauth_callback", code },
         window.location.origin
       );
       window.close();
     } else {
-      // fallback: mesma aba — salva code e redireciona
       sessionStorage.setItem("github_oauth_code", code);
       window.location.href = "/evaluations/new";
     }
