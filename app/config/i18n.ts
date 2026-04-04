@@ -328,6 +328,32 @@ i18n
             errorConnect: "Não foi possível conectar ao servidor.", hidePassword: "Ocultar senha", showPassword: "Mostrar senha",
           },
         },
+        github: {
+  loading: "Verificando integração...",
+  connect: {
+    title: "Conecte sua conta GitHub",
+    description: "Autorize o acesso para listar seus repositórios e criar avaliações automáticas.",
+    button: "Conectar com GitHub",
+    security: "Solicitaremos apenas permissão de leitura dos repositórios. Seu access_token é armazenado com segurança e nunca exposto no frontend."
+  },
+  status: {
+    connected: "GitHub conectado"
+  },
+  actions: {
+    refresh: "Atualizar",
+    disconnect: "Desconectar",
+    disconnecting: "Desconectando...",
+    analyze: "Analisar repositório",
+    analyzing: "Analisando..."
+  },
+  search: "Buscar repositório...",
+  empty: "Nenhum repositório encontrado.",
+  selected: "Repositório selecionado",
+  success: "Avaliação criada! Redirecionando...",
+  errors: {
+    analyze: "Erro ao analisar repositório."
+  }
+},
       },
 
       en: {
@@ -573,6 +599,32 @@ i18n
             errorConnect: "Could not connect to the server.", hidePassword: "Hide password", showPassword: "Show password",
           },
         },
+        github: {
+  loading: "Checking integration...",
+  connect: {
+    title: "Connect your GitHub account",
+    description: "Authorize access to list your repositories and create automatic evaluations.",
+    button: "Connect with GitHub",
+    security: "We only request read access to your repositories. Your access token is securely stored and never exposed on the frontend."
+  },
+  status: {
+    connected: "GitHub connected"
+  },
+  actions: {
+    refresh: "Refresh",
+    disconnect: "Disconnect",
+    disconnecting: "Disconnecting...",
+    analyze: "Analyze repository",
+    analyzing: "Analyzing..."
+  },
+  search: "Search repository...",
+  empty: "No repositories found.",
+  selected: "Selected repository",
+  success: "Evaluation created! Redirecting...",
+  errors: {
+    analyze: "Error analyzing repository."
+  }
+},
       },
 
       es: {
@@ -752,6 +804,32 @@ i18n
             errorConnect: "No se pudo conectar al servidor.", hidePassword: "Ocultar contraseña", showPassword: "Mostrar contraseña",
           },
         },
+        github: {
+  loading: "Verificando integración...",
+  connect: {
+    title: "Conecta tu cuenta de GitHub",
+    description: "Autoriza el acceso para listar tus repositorios y crear evaluaciones automáticas.",
+    button: "Conectar con GitHub",
+    security: "Solo solicitamos acceso de lectura a tus repositorios. Tu access token se almacena de forma segura y nunca se expone en el frontend."
+  },
+  status: {
+    connected: "GitHub conectado"
+  },
+  actions: {
+    refresh: "Actualizar",
+    disconnect: "Desconectar",
+    disconnecting: "Desconectando...",
+    analyze: "Analizar repositorio",
+    analyzing: "Analizando..."
+  },
+  search: "Buscar repositorio...",
+  empty: "No se encontraron repositorios.",
+  selected: "Repositorio seleccionado",
+  success: "¡Evaluación creada! Redirigiendo...",
+  errors: {
+    analyze: "Error al analizar el repositorio."
+  }
+}
       },
     },
     lng: typeof window !== "undefined" ? (localStorage.getItem("lang") || "pt") : "pt",

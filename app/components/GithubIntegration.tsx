@@ -7,7 +7,8 @@ import {
   RefreshCw, Zap, CheckCircle, XCircle,
   Loader2, Unplug,
 } from "lucide-react";
- 
+ import { useTranslation } from "react-i18next";
+
 // ── tipos ──────────────────────────────────────────────────────────────────
  
 interface GitHubRepo {
@@ -65,7 +66,7 @@ export default function GithubIntegration({ onAnalyzed, analyzedBy }: Props) {
   const [analyzeSuccess,  setAnalyzeSuccess]  = useState(false);
   const [analyzeError,    setAnalyzeError]    = useState("");
   const [disconnecting,   setDisconnecting]   = useState(false);
- 
+  const { t } = useTranslation();
   // ── verificar status ao montar ───────────────────────────────────────────
  
   useEffect(() => {
@@ -212,7 +213,7 @@ export default function GithubIntegration({ onAnalyzed, analyzedBy }: Props) {
  
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        setAnalyzeError(err.message ?? "Erro ao analisar repositório.");
+        setAnalyzeError(err.message ?? t("github.errors.analyze"));
         return;
       }
  
@@ -242,7 +243,7 @@ export default function GithubIntegration({ onAnalyzed, analyzedBy }: Props) {
     return (
       <div className="flex items-center justify-center py-16 text-slate-500 text-sm gap-3">
         <Loader2 size={16} className="animate-spin" />
-        Verificando integração...
+        {t("github.loading")}
       </div>
     );
   }
@@ -259,10 +260,10 @@ export default function GithubIntegration({ onAnalyzed, analyzedBy }: Props) {
  
         <div>
           <h3 className="font-bold text-lg text-white mb-2">
-            Conecte sua conta GitHub
+            {t("github.connect.title")}
           </h3>
           <p className="text-sm text-slate-400 max-w-xs leading-relaxed">
-            Autorize o acesso para listar seus repositórios e criar avaliações automáticas.
+            {t("github.connect.description")}
           </p>
         </div>
  
@@ -278,12 +279,11 @@ export default function GithubIntegration({ onAnalyzed, analyzedBy }: Props) {
           className="relative inline-flex items-center gap-2.5 overflow-hidden px-7 py-3.5 rounded-xl font-bold text-sm text-white bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.4)]"
         >
           <Github size={18} />
-          Conectar com GitHub
+          {t("github.connect.button")}
         </button>
  
         <p className="text-[0.7rem] text-slate-600 max-w-xs">
-          Solicitaremos apenas permissão de leitura dos repositórios.
-          Seu acesso_token é armazenado com segurança e nunca exposto no frontend.
+          {t("github.connect.security")}
         </p>
       </div>
     );
@@ -297,7 +297,7 @@ export default function GithubIntegration({ onAnalyzed, analyzedBy }: Props) {
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-2 text-[0.78rem] text-slate-400">
           <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-          GitHub conectado
+          {t("github.status.connected")}
         </div>
         <div className="flex gap-2">
           <button
@@ -306,7 +306,7 @@ export default function GithubIntegration({ onAnalyzed, analyzedBy }: Props) {
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[0.75rem] font-medium border border-slate-800 text-slate-500 hover:text-slate-300 hover:border-slate-700 transition-all duration-200 disabled:opacity-50"
           >
             <RefreshCw size={12} className={loadingRepos ? "animate-spin" : ""} />
-            Atualizar
+            {t("github.actions.refresh")}
           </button>
           <button
             onClick={handleDisconnect}
@@ -314,7 +314,7 @@ export default function GithubIntegration({ onAnalyzed, analyzedBy }: Props) {
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[0.75rem] font-medium border border-red-500/20 text-red-400/70 hover:text-red-400 hover:border-red-500/40 transition-all duration-200 disabled:opacity-50"
           >
             <Unplug size={12} />
-            {disconnecting ? "Desconectando..." : "Desconectar"}
+            {disconnecting ? t("github.actions.disconnecting") : t("github.actions.disconnect")}
           </button>
         </div>
       </div>
@@ -323,7 +323,7 @@ export default function GithubIntegration({ onAnalyzed, analyzedBy }: Props) {
       <div className="relative">
         <input
           type="text"
-          placeholder="Buscar repositório..."
+          placeholder={t("github.search")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="w-full rounded-xl px-4 py-2.5 bg-white/[0.03] border border-white/[0.07] text-slate-100 text-sm placeholder:text-slate-600 outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/15 transition-all"
@@ -339,7 +339,7 @@ export default function GithubIntegration({ onAnalyzed, analyzedBy }: Props) {
         </div>
       ) : filtered.length === 0 ? (
         <div className="py-10 text-center text-slate-500 text-sm">
-          Nenhum repositório encontrado.
+          {t("github.empty")}
         </div>
       ) : (
         <div className="flex flex-col gap-2 max-h-[380px] overflow-y-auto pr-1 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-slate-800">
@@ -404,7 +404,7 @@ export default function GithubIntegration({ onAnalyzed, analyzedBy }: Props) {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[0.72rem] text-slate-500 uppercase tracking-wider mb-0.5">
-                Repositório selecionado
+                {t("github.selected")}
               </p>
               <p className="font-bold text-sm text-white">{selectedRepo.fullName}</p>
             </div>
@@ -421,7 +421,7 @@ export default function GithubIntegration({ onAnalyzed, analyzedBy }: Props) {
           {analyzeSuccess ? (
             <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-green-500/30 bg-green-500/[0.08] text-green-400 text-sm font-medium animate-pulse">
               <CheckCircle size={14} />
-              Avaliação criada! Redirecionando...
+              {t("github.success")}
             </div>
           ) : (
             <button
@@ -430,9 +430,9 @@ export default function GithubIntegration({ onAnalyzed, analyzedBy }: Props) {
               className="relative w-full inline-flex items-center justify-center gap-2.5 overflow-hidden px-6 py-3 rounded-xl font-bold text-sm text-white bg-gradient-to-br from-violet-500 to-indigo-500 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed hover:enabled:-translate-y-0.5 hover:enabled:shadow-[0_10px_28px_rgba(139,92,246,0.4)] before:absolute before:inset-0 before:bg-gradient-to-r before:from-white/15 before:to-transparent before:-translate-x-full before:transition-transform before:duration-500 hover:enabled:before:translate-x-full"
             >
               {analyzing ? (
-                <><Loader2 size={16} className="animate-spin" /> Analisando...</>
+                <><Loader2 size={16} className="animate-spin" /> {t("github.actions.analyzing")}</>
               ) : (
-                <><Zap size={16} /> Analisar repositório</>
+                <><Zap size={16} /> {t("github.actions.analyze")}</>
               )}
             </button>
           )}
